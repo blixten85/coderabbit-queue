@@ -1,0 +1,42 @@
+name: CodeRabbit queue orchestrator
+
+on:
+  schedule:
+    - cron: '*/20 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: coderabbit-orchestrate
+  cancel-in-progress: false
+
+jobs:
+  orchestrate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Run orchestrator
+        env:
+          GH_TOKEN: ${{ secrets.CR_QUEUE_TOKEN }}
+        run: python3 orchestrate.py
+
+      - name: Commit queue-state.json if changed
+        run: |
+          if git diff --quiet -- queue-state.json; then
+            echo "No state changes, skipping commit."
+            exit 0
+          fi
+          git config user.name "coderabbit-queue-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add queue-state.json
+          git commit -m "chore: update queue-state.json [skip ci]"
+          git push
