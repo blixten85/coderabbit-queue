@@ -43,6 +43,7 @@ STATE_FILE = "queue-state.json"
 QUOTA_PER_HOUR = 4  # margin under CodeRabbit's real 5/hour account-wide cap
 QUOTA_WINDOW_MINUTES = 60
 PER_PR_COOLDOWN_MINUTES = 20
+MAX_AUTOFIX_ATTEMPTS = 2  # give up and leave for a human after this many tries
 
 NUDGE_MERGE_CONFLICT = "@coderabbitai resolve merge conflict"
 NUDGE_REVIEW = "@coderabbitai review"
@@ -88,7 +89,15 @@ def record_nudge(state, repo, pr_number, nudge_type):
     ts = now_utc().isoformat()
     state["nudges"].append({"ts": ts, "repo": repo, "pr": pr_number, "type": nudge_type})
     key = f"{OWNER}/{repo}#{pr_number}"
-    state["prs"].setdefault(key, {})["last_attempt"] = ts
+    entry = state["prs"].setdefault(key, {})
+    entry["last_attempt"] = ts
+    if nudge_type == "autofix":
+        entry["autofix_attempts"] = entry.get("autofix_attempts", 0) + 1
+
+
+def autofix_attempts(state, repo, pr_number):
+    key = f"{OWNER}/{repo}#{pr_number}"
+    return state["prs"].get(key, {}).get("autofix_attempts", 0)
 
 
 def recently_attempted(state, repo, pr_number):
@@ -258,7 +267,14 @@ def process_pr(repo, number, state):
 
     unresolved = get_unresolved_review_threads(repo, number)
     if unresolved > 0:
-        print(f"  PR #{number}: {unresolved} unresolved thread(s), conflict-free -> nudging autofix")
+        attempts = autofix_attempts(state, repo, number)
+        if attempts >= MAX_AUTOFIX_ATTEMPTS:
+            print(
+                f"  PR #{number}: {unresolved} unresolved thread(s) but already tried autofix "
+                f"{attempts}x with no resolution -> giving up, needs manual/human intervention"
+            )
+            return False
+        print(f"  PR #{number}: {unresolved} unresolved thread(s), conflict-free -> nudging autofix (attempt {attempts + 1})")
         if post_comment(repo, number, NUDGE_AUTOFIX):
             record_nudge(state, repo, number, "autofix")
             return True
