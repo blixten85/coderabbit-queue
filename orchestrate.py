@@ -239,6 +239,68 @@ def post_comment(repo, number, body):
     return True
 
 
+def update_branch(repo, number):
+    """PUT .../pulls/{number}/update-branch — mergar bas-branchen in i PR-
+    branchen (samma sak som GitHubs "Update branch"-knapp). Detta är INTE ett
+    CodeRabbit-kommando, men skapar en ny commit som CodeRabbit automatiskt
+    granskar på egen hand -> räknas ändå mot vår egen kvot-ledger nedan så vi
+    inte råkar trigga fler granskningar än QUOTA_PER_HOUR tillåter totalt."""
+    result = subprocess.run(
+        ["gh", "api", "-X", "PUT", f"repos/{OWNER}/{repo}/pulls/{number}/update-branch"],
+        capture_output=True,
+        text=True,
+    )
+    if result.returncode != 0:
+        print(f"Failed to update branch on {repo}#{number}: {result.stderr.strip()}", file=sys.stderr)
+        return False
+    return True
+
+
+def get_pr_id_and_automerge(repo, number):
+    query = """
+    query($owner: String!, $repo: String!, $number: Int!) {
+      repository(owner: $owner, name: $repo) {
+        pullRequest(number: $number) {
+          id
+          autoMergeRequest { enabledAt }
+        }
+      }
+    }
+    """
+    out = run_gh(
+        [
+            "api", "graphql",
+            "-f", f"query={query}",
+            "-f", f"owner={OWNER}",
+            "-f", f"repo={repo}",
+            "-F", f"number={number}",
+        ]
+    )
+    if out is None:
+        return None, False
+    try:
+        data = json.loads(out)
+    except json.JSONDecodeError:
+        return None, False
+    pr = (data.get("data") or {}).get("repository", {}).get("pullRequest") or {}
+    return pr.get("id"), bool(pr.get("autoMergeRequest"))
+
+
+def enable_auto_merge(repo, pr_id):
+    mutation = """
+    mutation($id: ID!) {
+      enablePullRequestAutoMerge(input: {pullRequestId: $id, mergeMethod: SQUASH}) {
+        clientMutationId
+      }
+    }
+    """
+    out = run_gh(["api", "graphql", "-f", f"query={mutation}", "-f", f"id={pr_id}"])
+    if out is None:
+        print(f"Failed to enable auto-merge on {repo}: {pr_id}", file=sys.stderr)
+        return False
+    return True
+
+
 def process_pr(repo, number, state):
     """Return True if a nudge was sent (consumes quota), False otherwise."""
     if recently_attempted(state, repo, number):
@@ -255,6 +317,17 @@ def process_pr(repo, number, state):
         print(f"  PR #{number}: merge conflict -> nudging resolve, then leaving alone this run")
         if post_comment(repo, number, NUDGE_MERGE_CONFLICT):
             record_nudge(state, repo, number, "resolve_merge_conflict")
+            return True
+        return False
+
+    # Branchen ligger efter bas-branchen (GitHubs "Update branch"-knapp) —
+    # utan detta blir en annars klar PR aldrig mergbar. Detta är inget
+    # CodeRabbit-kommando, men skapar en ny commit som CodeRabbit granskar
+    # automatiskt -> räknas mot vår kvot-ledger som en "nudge" ändå.
+    if details.get("mergeStateStatus") == "BEHIND":
+        print(f"  PR #{number}: efter bas-branchen -> uppdaterar branchen")
+        if update_branch(repo, number):
+            record_nudge(state, repo, number, "update_branch")
             return True
         return False
 
@@ -278,6 +351,15 @@ def process_pr(repo, number, state):
         if post_comment(repo, number, NUDGE_AUTOFIX):
             record_nudge(state, repo, number, "autofix")
             return True
+        return False
+
+    # Allt klart (inga trådar, ingen konflikt, inte efter bas-branchen) men
+    # kan ändå fastna om auto-merge-flaggan aldrig aktiverats — ingen ny
+    # granskning triggas av detta (bara metadata), så kostar ingen kvot.
+    pr_id, has_automerge = get_pr_id_and_automerge(repo, number)
+    if pr_id and not has_automerge:
+        print(f"  PR #{number}: allt klart men auto-merge ej aktiverat -> aktiverar")
+        enable_auto_merge(repo, pr_id)
         return False
 
     print(f"  PR #{number}: all clear, waiting on merge -> no action")
