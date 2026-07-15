@@ -3,25 +3,13 @@
     {
       "pr": 104,
       "repo": "docker-idempotent-update",
-      "ts": "2026-07-15T20:23:37.769281+00:00",
+      "ts": "2026-07-15T21:01:31.336526+00:00",
       "type": "resolve_merge_conflict"
-    },
-    {
-      "pr": 159,
-      "repo": "politiker-webapp",
-      "ts": "2026-07-15T20:23:56.207401+00:00",
-      "type": "review"
-    },
-    {
-      "pr": 158,
-      "repo": "politiker-webapp",
-      "ts": "2026-07-15T20:23:59.151267+00:00",
-      "type": "review"
     },
     {
       "pr": 104,
       "repo": "docker-idempotent-update",
-      "ts": "2026-07-15T21:01:31.336526+00:00",
+      "ts": "2026-07-15T21:39:06.309758+00:00",
       "type": "resolve_merge_conflict"
     }
   ],
@@ -45,7 +33,7 @@
       "last_attempt": "2026-07-15T09:04:00.562068+00:00"
     },
     "blixten85/docker-idempotent-update#104": {
-      "last_attempt": "2026-07-15T21:01:31.336526+00:00"
+      "last_attempt": "2026-07-15T21:39:06.309758+00:00"
     },
     "blixten85/docker-idempotent-update#105": {
       "last_attempt": "2026-07-15T09:03:57.403295+00:00"
@@ -165,5 +153,5 @@
       "last_attempt": "2026-07-15T10:58:58.469803+00:00"
     }
   },
-  "rate_limited_until": "2026-07-15T20:45:00.114843+00:00"
+  "rate_limited_until": "2026-07-15T22:00:24.115195+00:00"
 }
