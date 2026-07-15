@@ -1,27 +1,27 @@
 {
   "nudges": [
     {
-      "pr": 55,
-      "repo": "routines-relay",
-      "ts": "2026-07-15T05:01:39.205191+00:00",
-      "type": "autofix"
-    },
-    {
-      "pr": 54,
-      "repo": "routines-relay",
-      "ts": "2026-07-15T05:01:41.350142+00:00",
-      "type": "autofix"
-    },
-    {
-      "pr": 10,
+      "pr": 7,
       "repo": "ops-hub",
-      "ts": "2026-07-15T05:01:46.127853+00:00",
+      "ts": "2026-07-15T06:04:01.532390+00:00",
+      "type": "autofix"
+    },
+    {
+      "pr": 133,
+      "repo": "product-describer",
+      "ts": "2026-07-15T06:04:03.438033+00:00",
+      "type": "autofix"
+    },
+    {
+      "pr": 101,
+      "repo": "docker-idempotent-update",
+      "ts": "2026-07-15T06:04:05.254142+00:00",
       "type": "review"
     },
     {
-      "pr": 7,
-      "repo": "ops-hub",
-      "ts": "2026-07-15T05:01:48.275162+00:00",
+      "pr": 100,
+      "repo": "docker-idempotent-update",
+      "ts": "2026-07-15T06:04:06.853954+00:00",
       "type": "autofix"
     }
   ],
@@ -33,6 +33,13 @@
       "autofix_attempts": 2,
       "last_attempt": "2026-07-15T01:34:31.642958+00:00"
     },
+    "blixten85/docker-idempotent-update#100": {
+      "autofix_attempts": 1,
+      "last_attempt": "2026-07-15T06:04:06.853954+00:00"
+    },
+    "blixten85/docker-idempotent-update#101": {
+      "last_attempt": "2026-07-15T06:04:05.254142+00:00"
+    },
     "blixten85/ops-hub#10": {
       "last_attempt": "2026-07-15T05:01:46.127853+00:00"
     },
@@ -43,8 +50,12 @@
       "last_attempt": "2026-07-15T03:45:40.022287+00:00"
     },
     "blixten85/ops-hub#7": {
+      "autofix_attempts": 2,
+      "last_attempt": "2026-07-15T06:04:01.532390+00:00"
+    },
+    "blixten85/product-describer#133": {
       "autofix_attempts": 1,
-      "last_attempt": "2026-07-15T05:01:48.275162+00:00"
+      "last_attempt": "2026-07-15T06:04:03.438033+00:00"
     },
     "blixten85/routines-relay#54": {
       "autofix_attempts": 2,
