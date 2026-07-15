@@ -1,27 +1,27 @@
 {
   "nudges": [
     {
-      "pr": 255,
-      "repo": "scraper",
-      "ts": "2026-07-15T17:46:40.347834+00:00",
-      "type": "resolve"
-    },
-    {
       "pr": 104,
       "repo": "docker-idempotent-update",
-      "ts": "2026-07-15T17:46:53.415988+00:00",
+      "ts": "2026-07-15T19:02:52.841685+00:00",
       "type": "resolve_merge_conflict"
     },
     {
-      "pr": 115,
-      "repo": "pastebinit",
-      "ts": "2026-07-15T17:46:59.103169+00:00",
-      "type": "resolve"
+      "pr": 162,
+      "repo": "politiker-webapp",
+      "ts": "2026-07-15T19:03:09.607560+00:00",
+      "type": "review"
     },
     {
-      "pr": 70,
-      "repo": "politiker-kontakter",
-      "ts": "2026-07-15T17:47:00.667407+00:00",
+      "pr": 161,
+      "repo": "politiker-webapp",
+      "ts": "2026-07-15T19:03:11.367688+00:00",
+      "type": "review"
+    },
+    {
+      "pr": 160,
+      "repo": "politiker-webapp",
+      "ts": "2026-07-15T19:03:13.207262+00:00",
       "type": "review"
     }
   ],
@@ -45,7 +45,7 @@
       "last_attempt": "2026-07-15T09:04:00.562068+00:00"
     },
     "blixten85/docker-idempotent-update#104": {
-      "last_attempt": "2026-07-15T17:46:53.415988+00:00"
+      "last_attempt": "2026-07-15T19:02:52.841685+00:00"
     },
     "blixten85/docker-idempotent-update#105": {
       "last_attempt": "2026-07-15T09:03:57.403295+00:00"
@@ -78,6 +78,7 @@
     },
     "blixten85/pastebinit#115": {
       "autofix_attempts": 2,
+      "escalated_to_claude": true,
       "last_attempt": "2026-07-15T17:46:59.103169+00:00",
       "resolve_attempts": 1
     },
@@ -94,6 +95,15 @@
     },
     "blixten85/politiker-kontakter#70": {
       "last_attempt": "2026-07-15T17:47:00.667407+00:00"
+    },
+    "blixten85/politiker-webapp#160": {
+      "last_attempt": "2026-07-15T19:03:13.207262+00:00"
+    },
+    "blixten85/politiker-webapp#161": {
+      "last_attempt": "2026-07-15T19:03:11.367688+00:00"
+    },
+    "blixten85/politiker-webapp#162": {
+      "last_attempt": "2026-07-15T19:03:09.607560+00:00"
     },
     "blixten85/product-describer#133": {
       "autofix_attempts": 2,
