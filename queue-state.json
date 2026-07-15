@@ -3,26 +3,26 @@
     {
       "pr": 166,
       "repo": "bastion",
-      "ts": "2026-07-15T00:02:35.201748+00:00",
+      "ts": "2026-07-15T01:34:31.642958+00:00",
       "type": "autofix"
-    },
-    {
-      "pr": 250,
-      "repo": "scraper",
-      "ts": "2026-07-15T00:02:42.146750+00:00",
-      "type": "review"
     },
     {
       "pr": 249,
       "repo": "scraper",
-      "ts": "2026-07-15T00:02:44.453925+00:00",
+      "ts": "2026-07-15T01:34:40.416091+00:00",
       "type": "autofix"
     },
     {
-      "pr": 248,
+      "pr": 244,
       "repo": "scraper",
-      "ts": "2026-07-15T00:02:46.674626+00:00",
+      "ts": "2026-07-15T01:34:43.794290+00:00",
       "type": "autofix"
+    },
+    {
+      "pr": 242,
+      "repo": "scraper",
+      "ts": "2026-07-15T01:34:45.994714+00:00",
+      "type": "review"
     }
   ],
   "prs": {
@@ -30,12 +30,15 @@
       "last_attempt": "2026-07-14T22:48:34.162134+00:00"
     },
     "blixten85/bastion#166": {
-      "autofix_attempts": 1,
-      "last_attempt": "2026-07-15T00:02:35.201748+00:00"
+      "autofix_attempts": 2,
+      "last_attempt": "2026-07-15T01:34:31.642958+00:00"
+    },
+    "blixten85/scraper#242": {
+      "last_attempt": "2026-07-15T01:34:45.994714+00:00"
     },
     "blixten85/scraper#244": {
-      "autofix_attempts": 1,
-      "last_attempt": "2026-07-14T22:48:40.510865+00:00"
+      "autofix_attempts": 2,
+      "last_attempt": "2026-07-15T01:34:43.794290+00:00"
     },
     "blixten85/scraper#246": {
       "last_attempt": "2026-07-14T22:48:38.336703+00:00"
@@ -45,8 +48,8 @@
       "last_attempt": "2026-07-15T00:02:46.674626+00:00"
     },
     "blixten85/scraper#249": {
-      "autofix_attempts": 1,
-      "last_attempt": "2026-07-15T00:02:44.453925+00:00"
+      "autofix_attempts": 2,
+      "last_attempt": "2026-07-15T01:34:40.416091+00:00"
     },
     "blixten85/scraper#250": {
       "last_attempt": "2026-07-15T00:02:42.146750+00:00"
