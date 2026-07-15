@@ -1,28 +1,28 @@
 {
   "nudges": [
     {
-      "pr": 256,
-      "repo": "scraper",
-      "ts": "2026-07-15T10:58:58.469803+00:00",
-      "type": "review"
-    },
-    {
       "pr": 255,
       "repo": "scraper",
-      "ts": "2026-07-15T10:59:00.242059+00:00",
-      "type": "review"
-    },
-    {
-      "pr": 134,
-      "repo": "product-describer",
-      "ts": "2026-07-15T10:59:11.796133+00:00",
-      "type": "review"
+      "ts": "2026-07-15T12:07:40.263754+00:00",
+      "type": "autofix"
     },
     {
       "pr": 101,
       "repo": "docker-idempotent-update",
-      "ts": "2026-07-15T10:59:18.171006+00:00",
-      "type": "autofix"
+      "ts": "2026-07-15T12:07:55.759566+00:00",
+      "type": "resolve_merge_conflict"
+    },
+    {
+      "pr": 100,
+      "repo": "docker-idempotent-update",
+      "ts": "2026-07-15T12:07:57.028832+00:00",
+      "type": "resolve_merge_conflict"
+    },
+    {
+      "pr": 95,
+      "repo": "plex_clear_watchlist",
+      "ts": "2026-07-15T12:07:58.931914+00:00",
+      "type": "review"
     }
   ],
   "prs": {
@@ -35,11 +35,11 @@
     },
     "blixten85/docker-idempotent-update#100": {
       "autofix_attempts": 1,
-      "last_attempt": "2026-07-15T06:04:06.853954+00:00"
+      "last_attempt": "2026-07-15T12:07:57.028832+00:00"
     },
     "blixten85/docker-idempotent-update#101": {
       "autofix_attempts": 1,
-      "last_attempt": "2026-07-15T10:59:18.171006+00:00"
+      "last_attempt": "2026-07-15T12:07:55.759566+00:00"
     },
     "blixten85/docker-idempotent-update#103": {
       "last_attempt": "2026-07-15T09:04:00.562068+00:00"
@@ -65,6 +65,9 @@
     "blixten85/ops-hub#7": {
       "autofix_attempts": 2,
       "last_attempt": "2026-07-15T06:04:01.532390+00:00"
+    },
+    "blixten85/plex_clear_watchlist#95": {
+      "last_attempt": "2026-07-15T12:07:58.931914+00:00"
     },
     "blixten85/product-describer#133": {
       "autofix_attempts": 2,
@@ -112,7 +115,8 @@
       "last_attempt": "2026-07-15T09:03:43.359533+00:00"
     },
     "blixten85/scraper#255": {
-      "last_attempt": "2026-07-15T10:59:00.242059+00:00"
+      "autofix_attempts": 1,
+      "last_attempt": "2026-07-15T12:07:40.263754+00:00"
     },
     "blixten85/scraper#256": {
       "last_attempt": "2026-07-15T10:58:58.469803+00:00"
