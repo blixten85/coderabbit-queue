@@ -3,25 +3,19 @@
     {
       "pr": 104,
       "repo": "docker-idempotent-update",
-      "ts": "2026-07-15T19:02:52.841685+00:00",
+      "ts": "2026-07-15T20:23:37.769281+00:00",
       "type": "resolve_merge_conflict"
     },
     {
-      "pr": 162,
+      "pr": 159,
       "repo": "politiker-webapp",
-      "ts": "2026-07-15T19:03:09.607560+00:00",
+      "ts": "2026-07-15T20:23:56.207401+00:00",
       "type": "review"
     },
     {
-      "pr": 161,
+      "pr": 158,
       "repo": "politiker-webapp",
-      "ts": "2026-07-15T19:03:11.367688+00:00",
-      "type": "review"
-    },
-    {
-      "pr": 160,
-      "repo": "politiker-webapp",
-      "ts": "2026-07-15T19:03:13.207262+00:00",
+      "ts": "2026-07-15T20:23:59.151267+00:00",
       "type": "review"
     }
   ],
@@ -45,7 +39,7 @@
       "last_attempt": "2026-07-15T09:04:00.562068+00:00"
     },
     "blixten85/docker-idempotent-update#104": {
-      "last_attempt": "2026-07-15T19:02:52.841685+00:00"
+      "last_attempt": "2026-07-15T20:23:37.769281+00:00"
     },
     "blixten85/docker-idempotent-update#105": {
       "last_attempt": "2026-07-15T09:03:57.403295+00:00"
@@ -95,6 +89,12 @@
     },
     "blixten85/politiker-kontakter#70": {
       "last_attempt": "2026-07-15T17:47:00.667407+00:00"
+    },
+    "blixten85/politiker-webapp#158": {
+      "last_attempt": "2026-07-15T20:23:59.151267+00:00"
+    },
+    "blixten85/politiker-webapp#159": {
+      "last_attempt": "2026-07-15T20:23:56.207401+00:00"
     },
     "blixten85/politiker-webapp#160": {
       "last_attempt": "2026-07-15T19:03:13.207262+00:00"
@@ -159,5 +159,5 @@
       "last_attempt": "2026-07-15T10:58:58.469803+00:00"
     }
   },
-  "rate_limited_until": null
+  "rate_limited_until": "2026-07-15T20:45:00.114843+00:00"
 }
