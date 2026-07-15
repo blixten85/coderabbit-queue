@@ -1,28 +1,28 @@
 {
   "nudges": [
     {
-      "pr": 101,
-      "repo": "docker-idempotent-update",
-      "ts": "2026-07-15T15:00:50.729414+00:00",
-      "type": "resolve_merge_conflict"
-    },
-    {
       "pr": 115,
       "repo": "pastebinit",
-      "ts": "2026-07-15T15:01:02.810455+00:00",
+      "ts": "2026-07-15T16:32:20.179920+00:00",
       "type": "autofix"
     },
     {
       "pr": 109,
       "repo": "pastebinit",
-      "ts": "2026-07-15T15:01:07.536400+00:00",
+      "ts": "2026-07-15T16:32:23.543225+00:00",
       "type": "review"
     },
     {
-      "pr": 108,
-      "repo": "pastebinit",
-      "ts": "2026-07-15T15:01:10.080702+00:00",
-      "type": "review"
+      "pr": 68,
+      "repo": "politiker-kontakter",
+      "ts": "2026-07-15T16:32:26.089948+00:00",
+      "type": "autofix"
+    },
+    {
+      "pr": 66,
+      "repo": "politiker-kontakter",
+      "ts": "2026-07-15T16:32:28.539574+00:00",
+      "type": "autofix"
     }
   ],
   "prs": {
@@ -74,14 +74,22 @@
       "last_attempt": "2026-07-15T15:01:10.080702+00:00"
     },
     "blixten85/pastebinit#109": {
-      "last_attempt": "2026-07-15T15:01:07.536400+00:00"
+      "last_attempt": "2026-07-15T16:32:23.543225+00:00"
     },
     "blixten85/pastebinit#115": {
-      "autofix_attempts": 1,
-      "last_attempt": "2026-07-15T15:01:02.810455+00:00"
+      "autofix_attempts": 2,
+      "last_attempt": "2026-07-15T16:32:20.179920+00:00"
     },
     "blixten85/plex_clear_watchlist#95": {
       "last_attempt": "2026-07-15T12:07:58.931914+00:00"
+    },
+    "blixten85/politiker-kontakter#66": {
+      "autofix_attempts": 1,
+      "last_attempt": "2026-07-15T16:32:28.539574+00:00"
+    },
+    "blixten85/politiker-kontakter#68": {
+      "autofix_attempts": 1,
+      "last_attempt": "2026-07-15T16:32:26.089948+00:00"
     },
     "blixten85/product-describer#133": {
       "autofix_attempts": 2,
