@@ -121,6 +121,16 @@ def resolve_attempts(state, repo, pr_number):
     return state["prs"].get(key, {}).get("resolve_attempts", 0)
 
 
+def already_escalated(state, repo, pr_number):
+    key = f"{OWNER}/{repo}#{pr_number}"
+    return bool(state["prs"].get(key, {}).get("escalated_to_claude"))
+
+
+def mark_escalated(state, repo, pr_number):
+    key = f"{OWNER}/{repo}#{pr_number}"
+    state["prs"].setdefault(key, {})["escalated_to_claude"] = True
+
+
 def is_rate_limited(state):
     until = state.get("rate_limited_until")
     if not until:
@@ -290,6 +300,27 @@ def post_comment(repo, number, body):
     return True
 
 
+def escalate_to_claude(repo, number):
+    """Sista utväg: lägg på `ask-claude`-etiketten (samma mönster som
+    claude-assign-trigger.yml redan använder överallt) istället för att bara
+    logga och ge upp tyst. ENVÄGS OCH ENGÅNGS med flit — triggas bara av
+    GitHubs `labeled`-event, inte textmatchning, så en redan satt etikett
+    (t.ex. om orkestreraren råkar köra på samma PR igen) triggar INGET nytt
+    event och kostar alltså ingen ny Claude-körning. Kombinerat med att denna
+    gren bara nås EN gång per PR (MAX_RESOLVE_ATTEMPTS=1 ovan) är detta
+    strikt begränsat till max en eskalering per PR, aldrig en loop — samma
+    säkerhetsprincip som förhindrade den tidigare 1500kr/6h-kostnadsincidenten."""
+    result = subprocess.run(
+        ["gh", "pr", "edit", str(number), "--repo", f"{OWNER}/{repo}", "--add-label", "ask-claude"],
+        capture_output=True,
+        text=True,
+    )
+    if result.returncode != 0:
+        print(f"Failed to label {repo}#{number} ask-claude: {result.stderr.strip()}", file=sys.stderr)
+        return False
+    return True
+
+
 def update_branch(repo, number):
     """PUT .../pulls/{number}/update-branch — mergar bas-branchen in i PR-
     branchen (samma sak som GitHubs "Update branch"-knapp). Detta är INTE ett
@@ -420,10 +451,15 @@ def process_pr(repo, number, state):
         # fixa det på riktigt. Körs bara EN gång per PR (MAX_RESOLVE_ATTEMPTS).
         resolved_tries = resolve_attempts(state, repo, number)
         if resolved_tries >= MAX_RESOLVE_ATTEMPTS:
+            if already_escalated(state, repo, number):
+                print(f"  PR #{number}: redan eskalerad till @claude tidigare -> ingen ny åtgärd")
+                return False
             print(
                 f"  PR #{number}: {unresolved} unresolved thread(s), autofix ({attempts}x) OCH resolve redan försökt "
-                f"utan effekt -> ger upp helt, kräver manuell granskning"
+                f"utan effekt -> eskalerar till @claude (ask-claude-etikett, engångs)"
             )
+            if escalate_to_claude(repo, number):
+                mark_escalated(state, repo, number)
             return False
         print(
             f"  PR #{number}: {unresolved} unresolved thread(s), autofix uttömt ({attempts}x) -> "
