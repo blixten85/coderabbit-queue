@@ -15,6 +15,7 @@ read/write across all target repos) — `gh` and `gh api` pick it up
 automatically.
 """
 import json
+import re
 import subprocess
 import sys
 from datetime import datetime, timedelta, timezone
@@ -43,11 +44,23 @@ STATE_FILE = "queue-state.json"
 QUOTA_PER_HOUR = 4  # margin under CodeRabbit's real 5/hour account-wide cap
 QUOTA_WINDOW_MINUTES = 60
 PER_PR_COOLDOWN_MINUTES = 20
-MAX_AUTOFIX_ATTEMPTS = 2  # give up and leave for a human after this many tries
+MAX_AUTOFIX_ATTEMPTS = 2  # give up on code fixes after this many tries, then fall back to @resolve
+MAX_RESOLVE_ATTEMPTS = 1  # final fallback after autofix is exhausted — only try once
 
 NUDGE_MERGE_CONFLICT = "@coderabbitai resolve merge conflict"
 NUDGE_REVIEW = "@coderabbitai review"
 NUDGE_AUTOFIX = "@coderabbitai autofix"
+NUDGE_RESOLVE = "@coderabbitai resolve"
+
+# CodeRabbits eget svar på en rate-limit-träff, bekräftat ordagrant mot ett
+# verkligt konto (2026-07-15): "... More reviews will be available in 21
+# minutes." — skiljer sig från vår egen kvot-ledger (queue-state.json), som
+# bara är en HEURISTIK baserad på GitHub-events vi själva triggat. Genom att
+# läsa CodeRabbits egna kommentarer får vi den FAKTISKA, auktoritativa
+# kvotstatusen istället för att gissa och slösa nudgar mot en redan uttömd kvot.
+RATE_LIMIT_PATTERN = re.compile(
+    r"more reviews will be available in (\d+)\s*(minute|hour)s?", re.IGNORECASE
+)
 
 
 def now_utc():
@@ -66,6 +79,7 @@ def load_state():
         data = {}
     data.setdefault("nudges", [])  # list of {"ts": iso, "repo": str, "pr": int, "type": str}
     data.setdefault("prs", {})  # "owner/repo#N" -> {"last_attempt": iso}
+    data.setdefault("rate_limited_until", None)  # iso timestamp, kontobrett
     return data
 
 
@@ -93,11 +107,48 @@ def record_nudge(state, repo, pr_number, nudge_type):
     entry["last_attempt"] = ts
     if nudge_type == "autofix":
         entry["autofix_attempts"] = entry.get("autofix_attempts", 0) + 1
+    if nudge_type == "resolve":
+        entry["resolve_attempts"] = entry.get("resolve_attempts", 0) + 1
 
 
 def autofix_attempts(state, repo, pr_number):
     key = f"{OWNER}/{repo}#{pr_number}"
     return state["prs"].get(key, {}).get("autofix_attempts", 0)
+
+
+def resolve_attempts(state, repo, pr_number):
+    key = f"{OWNER}/{repo}#{pr_number}"
+    return state["prs"].get(key, {}).get("resolve_attempts", 0)
+
+
+def is_rate_limited(state):
+    until = state.get("rate_limited_until")
+    if not until:
+        return False
+    return now_utc() < parse_ts(until)
+
+
+def detect_and_record_rate_limit(state, details):
+    """Skanna PR-kommentarer efter CodeRabbits egen rate-limit-text. Om
+    hittad: sätt en kontobred backoff-deadline i state, auktoritativ (från
+    CodeRabbit självt) snarare än vår egen händelsebaserade gissning."""
+    for comment in details.get("comments") or []:
+        author = (comment.get("author") or {}).get("login", "")
+        if "coderabbit" not in author.lower():
+            continue
+        body = comment.get("body") or ""
+        m = RATE_LIMIT_PATTERN.search(body)
+        if not m:
+            continue
+        amount, unit = int(m.group(1)), m.group(2).lower()
+        seconds = amount * 60 if unit == "minute" else amount * 3600
+        deadline = now_utc() + timedelta(seconds=seconds)
+        existing = state.get("rate_limited_until")
+        if not existing or deadline > parse_ts(existing):
+            state["rate_limited_until"] = deadline.isoformat()
+            print(f"  CodeRabbit rate limit upptäckt i kommentar -> backar av till {deadline.isoformat()}")
+        return True
+    return False
 
 
 def recently_attempted(state, repo, pr_number):
@@ -312,6 +363,18 @@ def process_pr(repo, number, state):
         print(f"  PR #{number}: could not fetch details, skipping")
         return False
 
+    # Läs CodeRabbits egna kommentarer efter en rate-limit-signal INNAN vi
+    # bestämmer nästa åtgärd — den är auktoritativ (från CodeRabbit självt),
+    # vår egen ledger är bara en gissning baserad på events vi triggat.
+    detect_and_record_rate_limit(state, details)
+    if is_rate_limited(state):
+        print(f"  PR #{number}: CodeRabbit rate-limited (kontobrett) -> hoppar över alla granskningsnudgar")
+        # Auto-merge-aktivering kostar ingen granskningskvot — säkert oavsett.
+        pr_id, has_automerge = get_pr_id_and_automerge(repo, number)
+        if pr_id and not has_automerge:
+            enable_auto_merge(repo, pr_id)
+        return False
+
     mergeable = details.get("mergeable")
     if mergeable == "CONFLICTING":
         print(f"  PR #{number}: merge conflict -> nudging resolve, then leaving alone this run")
@@ -341,15 +404,33 @@ def process_pr(repo, number, state):
     unresolved = get_unresolved_review_threads(repo, number)
     if unresolved > 0:
         attempts = autofix_attempts(state, repo, number)
-        if attempts >= MAX_AUTOFIX_ATTEMPTS:
+        if attempts < MAX_AUTOFIX_ATTEMPTS:
+            print(f"  PR #{number}: {unresolved} unresolved thread(s), conflict-free -> nudging autofix (attempt {attempts + 1})")
+            if post_comment(repo, number, NUDGE_AUTOFIX):
+                record_nudge(state, repo, number, "autofix")
+                return True
+            return False
+
+        # Autofix gav upp — sista fallback: tvinga fram grönt genom att lösa
+        # ALLA kvarvarande trådar, oavsett allvarlighetsgrad (uttrycklig
+        # instruktion: full automatisering, ingen severity-spärr). RISK,
+        # medvetet accepterad: @resolve verifierar inte att koden faktiskt är
+        # fixad, den stänger bara konversationerna — ett Critical/Security-
+        # fynd kan mergas OGRANSKAT av en människa om autofix aldrig lyckades
+        # fixa det på riktigt. Körs bara EN gång per PR (MAX_RESOLVE_ATTEMPTS).
+        resolved_tries = resolve_attempts(state, repo, number)
+        if resolved_tries >= MAX_RESOLVE_ATTEMPTS:
             print(
-                f"  PR #{number}: {unresolved} unresolved thread(s) but already tried autofix "
-                f"{attempts}x with no resolution -> giving up, needs manual/human intervention"
+                f"  PR #{number}: {unresolved} unresolved thread(s), autofix ({attempts}x) OCH resolve redan försökt "
+                f"utan effekt -> ger upp helt, kräver manuell granskning"
             )
             return False
-        print(f"  PR #{number}: {unresolved} unresolved thread(s), conflict-free -> nudging autofix (attempt {attempts + 1})")
-        if post_comment(repo, number, NUDGE_AUTOFIX):
-            record_nudge(state, repo, number, "autofix")
+        print(
+            f"  PR #{number}: {unresolved} unresolved thread(s), autofix uttömt ({attempts}x) -> "
+            f"tvingar grönt med @resolve (full automatisering, ingen severity-spärr)"
+        )
+        if post_comment(repo, number, NUDGE_RESOLVE):
+            record_nudge(state, repo, number, "resolve")
             return True
         return False
 
