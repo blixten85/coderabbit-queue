@@ -3,13 +3,13 @@
     {
       "pr": 104,
       "repo": "docker-idempotent-update",
-      "ts": "2026-07-15T22:06:17.425188+00:00",
+      "ts": "2026-07-15T22:39:56.327207+00:00",
       "type": "resolve_merge_conflict"
     },
     {
       "pr": 104,
       "repo": "docker-idempotent-update",
-      "ts": "2026-07-15T22:39:56.327207+00:00",
+      "ts": "2026-07-15T23:06:16.902411+00:00",
       "type": "resolve_merge_conflict"
     }
   ],
@@ -33,7 +33,7 @@
       "last_attempt": "2026-07-15T09:04:00.562068+00:00"
     },
     "blixten85/docker-idempotent-update#104": {
-      "last_attempt": "2026-07-15T22:39:56.327207+00:00"
+      "last_attempt": "2026-07-15T23:06:16.902411+00:00"
     },
     "blixten85/docker-idempotent-update#105": {
       "last_attempt": "2026-07-15T09:03:57.403295+00:00"
@@ -153,5 +153,5 @@
       "last_attempt": "2026-07-15T10:58:58.469803+00:00"
     }
   },
-  "rate_limited_until": "2026-07-15T23:01:16.602622+00:00"
+  "rate_limited_until": "2026-07-15T23:27:37.994251+00:00"
 }
