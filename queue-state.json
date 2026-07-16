@@ -1,12 +1,5 @@
 {
-  "nudges": [
-    {
-      "pr": 104,
-      "repo": "docker-idempotent-update",
-      "ts": "2026-07-16T13:08:00.330857+00:00",
-      "type": "resolve"
-    }
-  ],
+  "nudges": [],
   "prs": {
     "blixten85/bastion#163": {
       "last_attempt": "2026-07-14T22:48:34.162134+00:00"
