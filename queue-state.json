@@ -1,5 +1,18 @@
 {
-  "nudges": [],
+  "nudges": [
+    {
+      "pr": 97,
+      "repo": "plex_clear_watchlist",
+      "ts": "2026-07-16T22:39:02.670186+00:00",
+      "type": "autofix"
+    },
+    {
+      "pr": 140,
+      "repo": "filtered-movies",
+      "ts": "2026-07-16T22:39:33.933897+00:00",
+      "type": "review"
+    }
+  ],
   "prs": {
     "blixten85/bastion#163": {
       "last_attempt": "2026-07-14T22:48:34.162134+00:00"
@@ -32,6 +45,9 @@
     },
     "blixten85/filtered-movies#137": {
       "last_attempt": "2026-07-16T07:10:07.936873+00:00"
+    },
+    "blixten85/filtered-movies#140": {
+      "last_attempt": "2026-07-16T22:39:33.933897+00:00"
     },
     "blixten85/ops-hub#10": {
       "last_attempt": "2026-07-15T05:01:46.127853+00:00"
@@ -73,6 +89,10 @@
       "escalated_to_claude": true,
       "last_attempt": "2026-07-16T20:19:56.502001+00:00",
       "resolve_attempts": 1
+    },
+    "blixten85/plex_clear_watchlist#97": {
+      "autofix_attempts": 1,
+      "last_attempt": "2026-07-16T22:39:02.670186+00:00"
     },
     "blixten85/politiker-kontakter#66": {
       "autofix_attempts": 1,
