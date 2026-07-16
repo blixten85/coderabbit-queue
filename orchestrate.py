@@ -46,6 +46,7 @@ QUOTA_WINDOW_MINUTES = 60
 PER_PR_COOLDOWN_MINUTES = 20
 MAX_AUTOFIX_ATTEMPTS = 2  # give up on code fixes after this many tries, then fall back to @resolve
 MAX_RESOLVE_ATTEMPTS = 1  # final fallback after autofix is exhausted — only try once
+MAX_MERGE_CONFLICT_ATTEMPTS = 2  # give up nudging CodeRabbit's merge-conflict resolver after this many tries
 
 NUDGE_MERGE_CONFLICT = "@coderabbitai resolve merge conflict"
 NUDGE_REVIEW = "@coderabbitai review"
@@ -109,6 +110,8 @@ def record_nudge(state, repo, pr_number, nudge_type):
         entry["autofix_attempts"] = entry.get("autofix_attempts", 0) + 1
     if nudge_type == "resolve":
         entry["resolve_attempts"] = entry.get("resolve_attempts", 0) + 1
+    if nudge_type == "resolve_merge_conflict":
+        entry["merge_conflict_attempts"] = entry.get("merge_conflict_attempts", 0) + 1
 
 
 def autofix_attempts(state, repo, pr_number):
@@ -119,6 +122,11 @@ def autofix_attempts(state, repo, pr_number):
 def resolve_attempts(state, repo, pr_number):
     key = f"{OWNER}/{repo}#{pr_number}"
     return state["prs"].get(key, {}).get("resolve_attempts", 0)
+
+
+def merge_conflict_attempts(state, repo, pr_number):
+    key = f"{OWNER}/{repo}#{pr_number}"
+    return state["prs"].get(key, {}).get("merge_conflict_attempts", 0)
 
 
 def already_escalated(state, repo, pr_number):
@@ -306,10 +314,10 @@ def escalate_to_claude(repo, number):
     logga och ge upp tyst. ENVÄGS OCH ENGÅNGS med flit — triggas bara av
     GitHubs `labeled`-event, inte textmatchning, så en redan satt etikett
     (t.ex. om orkestreraren råkar köra på samma PR igen) triggar INGET nytt
-    event och kostar alltså ingen ny Claude-körning. Kombinerat med att denna
-    gren bara nås EN gång per PR (MAX_RESOLVE_ATTEMPTS=1 ovan) är detta
-    strikt begränsat till max en eskalering per PR, aldrig en loop — samma
-    säkerhetsprincip som förhindrade den tidigare 1500kr/6h-kostnadsincidenten."""
+    event och kostar alltså ingen ny Claude-körning. Två anropsställen når hit
+    (resolve-uttömd respektive merge-conflict-uttömd), men already_escalated()
+    ovan garanterar ändå max EN eskalering per PR totalt, aldrig en loop —
+    samma säkerhetsprincip som förhindrade den tidigare 1500kr/6h-kostnadsincidenten."""
     result = subprocess.run(
         ["gh", "pr", "edit", str(number), "--repo", f"{OWNER}/{repo}", "--add-label", "ask-claude"],
         capture_output=True,
@@ -408,7 +416,19 @@ def process_pr(repo, number, state):
 
     mergeable = details.get("mergeable")
     if mergeable == "CONFLICTING":
-        print(f"  PR #{number}: merge conflict -> nudging resolve, then leaving alone this run")
+        attempts = merge_conflict_attempts(state, repo, number)
+        if attempts >= MAX_MERGE_CONFLICT_ATTEMPTS:
+            if already_escalated(state, repo, number):
+                print(f"  PR #{number}: merge conflict, redan eskalerad till @claude tidigare -> ingen ny åtgärd")
+                return False
+            print(
+                f"  PR #{number}: merge conflict kvarstår efter {attempts} @resolve-nudgar -> "
+                f"eskalerar till @claude (ask-claude-etikett, engångs) istället för att nudga vidare"
+            )
+            if escalate_to_claude(repo, number):
+                mark_escalated(state, repo, number)
+            return False
+        print(f"  PR #{number}: merge conflict -> nudging resolve (attempt {attempts + 1}), then leaving alone this run")
         if post_comment(repo, number, NUDGE_MERGE_CONFLICT):
             record_nudge(state, repo, number, "resolve_merge_conflict")
             return True
