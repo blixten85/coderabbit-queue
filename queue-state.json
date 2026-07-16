@@ -3,12 +3,6 @@
     {
       "pr": 104,
       "repo": "docker-idempotent-update",
-      "ts": "2026-07-16T12:34:27.234344+00:00",
-      "type": "autofix"
-    },
-    {
-      "pr": 104,
-      "repo": "docker-idempotent-update",
       "ts": "2026-07-16T13:08:00.330857+00:00",
       "type": "resolve"
     }
