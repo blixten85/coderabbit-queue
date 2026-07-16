@@ -1,9 +1,9 @@
 {
   "nudges": [
     {
-      "pr": 100,
-      "repo": "product-describer-cloudflare",
-      "ts": "2026-07-16T16:30:55.842089+00:00",
+      "pr": 59,
+      "repo": "routines-relay",
+      "ts": "2026-07-16T17:46:41.990835+00:00",
       "type": "autofix"
     }
   ],
@@ -141,6 +141,10 @@
     },
     "blixten85/routines-relay#58": {
       "last_attempt": "2026-07-15T08:02:14.438645+00:00"
+    },
+    "blixten85/routines-relay#59": {
+      "autofix_attempts": 1,
+      "last_attempt": "2026-07-16T17:46:41.990835+00:00"
     },
     "blixten85/scraper#242": {
       "last_attempt": "2026-07-15T01:34:45.994714+00:00"
