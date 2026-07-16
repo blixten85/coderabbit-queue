@@ -3,12 +3,6 @@
     {
       "pr": 59,
       "repo": "routines-relay",
-      "ts": "2026-07-16T17:46:41.990835+00:00",
-      "type": "autofix"
-    },
-    {
-      "pr": 59,
-      "repo": "routines-relay",
       "ts": "2026-07-16T18:25:48.139026+00:00",
       "type": "autofix"
     },
@@ -17,6 +11,18 @@
       "repo": "plex_clear_watchlist",
       "ts": "2026-07-16T18:25:56.313384+00:00",
       "type": "resolve_merge_conflict"
+    },
+    {
+      "pr": 59,
+      "repo": "routines-relay",
+      "ts": "2026-07-16T19:02:43.679206+00:00",
+      "type": "resolve"
+    },
+    {
+      "pr": 96,
+      "repo": "plex_clear_watchlist",
+      "ts": "2026-07-16T19:02:53.566331+00:00",
+      "type": "autofix"
     }
   ],
   "prs": {
@@ -88,7 +94,8 @@
       "last_attempt": "2026-07-15T12:07:58.931914+00:00"
     },
     "blixten85/plex_clear_watchlist#96": {
-      "last_attempt": "2026-07-16T18:25:56.313384+00:00"
+      "autofix_attempts": 1,
+      "last_attempt": "2026-07-16T19:02:53.566331+00:00"
     },
     "blixten85/politiker-kontakter#66": {
       "autofix_attempts": 1,
@@ -159,7 +166,8 @@
     },
     "blixten85/routines-relay#59": {
       "autofix_attempts": 2,
-      "last_attempt": "2026-07-16T18:25:48.139026+00:00"
+      "last_attempt": "2026-07-16T19:02:43.679206+00:00",
+      "resolve_attempts": 1
     },
     "blixten85/scraper#242": {
       "last_attempt": "2026-07-15T01:34:45.994714+00:00"
