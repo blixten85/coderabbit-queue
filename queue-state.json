@@ -1,5 +1,12 @@
 {
-  "nudges": [],
+  "nudges": [
+    {
+      "pr": 100,
+      "repo": "product-describer-cloudflare",
+      "ts": "2026-07-16T16:30:55.842089+00:00",
+      "type": "autofix"
+    }
+  ],
   "prs": {
     "blixten85/bastion#163": {
       "last_attempt": "2026-07-14T22:48:34.162134+00:00"
@@ -106,6 +113,10 @@
     },
     "blixten85/product-describer#134": {
       "last_attempt": "2026-07-15T10:59:11.796133+00:00"
+    },
+    "blixten85/product-describer-cloudflare#100": {
+      "autofix_attempts": 1,
+      "last_attempt": "2026-07-16T16:30:55.842089+00:00"
     },
     "blixten85/product-describer-cloudflare#90": {
       "last_attempt": "2026-07-16T07:10:22.475727+00:00"
