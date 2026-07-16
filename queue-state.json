@@ -83,6 +83,7 @@
     },
     "blixten85/plex_clear_watchlist#96": {
       "autofix_attempts": 2,
+      "escalated_to_claude": true,
       "last_attempt": "2026-07-16T20:19:56.502001+00:00",
       "resolve_attempts": 1
     },
