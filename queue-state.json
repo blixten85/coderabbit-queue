@@ -1,22 +1,16 @@
 {
   "nudges": [
     {
-      "pr": 59,
-      "repo": "routines-relay",
-      "ts": "2026-07-16T19:02:43.679206+00:00",
-      "type": "resolve"
-    },
-    {
-      "pr": 96,
-      "repo": "plex_clear_watchlist",
-      "ts": "2026-07-16T19:02:53.566331+00:00",
-      "type": "autofix"
-    },
-    {
       "pr": 96,
       "repo": "plex_clear_watchlist",
       "ts": "2026-07-16T19:43:53.087360+00:00",
       "type": "autofix"
+    },
+    {
+      "pr": 96,
+      "repo": "plex_clear_watchlist",
+      "ts": "2026-07-16T20:19:56.502001+00:00",
+      "type": "resolve"
     }
   ],
   "prs": {
@@ -89,7 +83,8 @@
     },
     "blixten85/plex_clear_watchlist#96": {
       "autofix_attempts": 2,
-      "last_attempt": "2026-07-16T19:43:53.087360+00:00"
+      "last_attempt": "2026-07-16T20:19:56.502001+00:00",
+      "resolve_attempts": 1
     },
     "blixten85/politiker-kontakter#66": {
       "autofix_attempts": 1,
