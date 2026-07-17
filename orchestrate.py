@@ -70,6 +70,15 @@ NUDGE_MERGE_CONFLICT = "@coderabbitai resolve merge conflict"
 NUDGE_REVIEW = "@coderabbitai review"
 NUDGE_AUTOFIX = "@coderabbitai autofix"
 NUDGE_RESOLVE = "@coderabbitai resolve"
+# Sentry Seer har INGET fix/autofix-kommando (verifierat mot Sentrys egen
+# dokumentation, 2026-07-17: docs.sentry.io/product/ai-in-sentry/seer/code-review/
+# — bara "@sentry review" och "@sentry generate-test" finns). Sentry-fynd kan
+# därför inte nudgas att fixas som CodeRabbit/cubic - de faller igenom till
+# den bot-agnostiska @resolve-fallbacken när autofix är uttömt. Men Seer
+# hittar riktiga fel/sårbarheter i granskningen, så det är fortfarande värt
+# att trigga en granskning om ingen körts än (samma idé som NUDGE_REVIEW
+# för CodeRabbit).
+NUDGE_SENTRY_REVIEW = "@sentry review"
 # Cubic har ett eget, separat autofix-kommando (kör direkt mot PR-branchen,
 # se memory reference-cubic-commands.md) — CodeRabbits "@coderabbitai autofix"
 # ser BARA sina egna review-kommentarer och skippar tyst annars ("No
@@ -401,6 +410,18 @@ def has_coderabbit_check(details):
     return False
 
 
+def has_sentry_check(details):
+    """Check-namnet är "Seer Code Review" i alla repon vi observerat (inte
+    "sentry") - matchar båda orden för att inte missa en framtida
+    namnändring åt endera hållet."""
+    rollup = details.get("statusCheckRollup") or []
+    for check in rollup:
+        name = (check.get("name") or check.get("context") or "").lower()
+        if "seer" in name or "sentry" in name:
+            return True
+    return False
+
+
 def has_real_review_comment(details):
     for review in details.get("reviews") or []:
         body = review.get("body") or ""
@@ -582,9 +603,17 @@ def process_pr(repo, number, state):
             return True
         return False
 
-    if not has_coderabbit_check(details) or not has_real_review_comment(details):
-        print(f"  PR #{number}: no CodeRabbit check/review yet -> nudging review")
-        if post_comment(repo, number, NUDGE_REVIEW):
+    needs_coderabbit_review = not has_coderabbit_check(details) or not has_real_review_comment(details)
+    needs_sentry_review = not has_sentry_check(details)
+    if needs_coderabbit_review or needs_sentry_review:
+        posted_any = False
+        if needs_coderabbit_review:
+            print(f"  PR #{number}: no CodeRabbit check/review yet -> nudging review")
+            posted_any = post_comment(repo, number, NUDGE_REVIEW) or posted_any
+        if needs_sentry_review:
+            print(f"  PR #{number}: no Seer/Sentry check yet -> nudging @sentry review")
+            posted_any = post_comment(repo, number, NUDGE_SENTRY_REVIEW) or posted_any
+        if posted_any:
             record_nudge(state, repo, number, "review")
             return True
         return False
