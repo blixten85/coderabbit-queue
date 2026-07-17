@@ -3,8 +3,8 @@
     {
       "pr": 169,
       "repo": "bastion",
-      "ts": "2026-07-17T07:05:41.877061+00:00",
-      "type": "resolve"
+      "ts": "2026-07-17T09:03:28.401605+00:00",
+      "type": "review"
     }
   ],
   "prs": {
@@ -24,7 +24,7 @@
     "blixten85/bastion#169": {
       "autofix_attempts": 2,
       "escalated_to_claude": true,
-      "last_attempt": "2026-07-17T07:05:41.877061+00:00",
+      "last_attempt": "2026-07-17T09:03:28.401605+00:00",
       "resolve_attempts": 1
     },
     "blixten85/docker-idempotent-update#100": {
