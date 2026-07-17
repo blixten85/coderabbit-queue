@@ -1,5 +1,12 @@
 {
-  "nudges": [],
+  "nudges": [
+    {
+      "pr": 16,
+      "repo": "ops-hub",
+      "ts": "2026-07-17T16:04:52.290723+00:00",
+      "type": "autofix"
+    }
+  ],
   "prs": {
     "blixten85/bastion#163": {
       "last_attempt": "2026-07-14T22:48:34.162134+00:00"
@@ -60,6 +67,10 @@
     "blixten85/ops-hub#14": {
       "autofix_attempts": 1,
       "last_attempt": "2026-07-15T13:33:00.926019+00:00"
+    },
+    "blixten85/ops-hub#16": {
+      "autofix_attempts": 1,
+      "last_attempt": "2026-07-17T16:04:52.290723+00:00"
     },
     "blixten85/ops-hub#7": {
       "autofix_attempts": 2,
