@@ -20,6 +20,23 @@ import subprocess
 import sys
 from datetime import datetime, timedelta, timezone
 
+import sentry_sdk
+from sentry_sdk.integrations.mcp import MCPIntegration
+
+sentry_sdk.init(
+    dsn="https://f53bfdb9cbc623daf3860a06ea6a3855@o4511717224480768.ingest.de.sentry.io/4511746671181904",
+    send_default_pii=True,
+    # Tracing
+    traces_sample_rate=1.0,
+    # Profiling (continuous, trace-lifecycle)
+    profile_session_sample_rate=1.0,
+    profile_lifecycle="trace",
+    # Logs
+    enable_logs=True,
+    # MCP Observability
+    integrations=[MCPIntegration()],
+)
+
 OWNER = "blixten85"
 REPOS = [
     "bastion",
@@ -52,6 +69,14 @@ NUDGE_MERGE_CONFLICT = "@coderabbitai resolve merge conflict"
 NUDGE_REVIEW = "@coderabbitai review"
 NUDGE_AUTOFIX = "@coderabbitai autofix"
 NUDGE_RESOLVE = "@coderabbitai resolve"
+# Cubic har ett eget, separat autofix-kommando (kör direkt mot PR-branchen,
+# se memory reference-cubic-commands.md) — CodeRabbits "@coderabbitai autofix"
+# ser BARA sina egna review-kommentarer och skippar tyst annars ("No
+# unresolved CodeRabbit review comments with fix instructions found"),
+# vilket lämnar cubic-dev-ai-fynd helt onudgade. Ingen egen kvot-gating mot
+# QUOTA_PER_HOUR (den är kalibrerad mot CodeRabbits kontobredda 5/timme-tak,
+# inte cubics separata gräns).
+NUDGE_CUBIC_AUTOFIX = "@cubic-dev-ai fix this issue in this branch"
 
 # CodeRabbits eget svar på en rate-limit-träff, bekräftat ordagrant mot ett
 # verkligt konto (2026-07-15): "... More reviews will be available in 21
@@ -72,6 +97,7 @@ def parse_ts(ts):
     return datetime.fromisoformat(ts.replace("Z", "+00:00"))
 
 
+@sentry_sdk.trace
 def load_state():
     try:
         with open(STATE_FILE) as f:
@@ -105,6 +131,7 @@ def migrate_merge_conflict_attempts(state):
             state["prs"][key]["merge_conflict_attempts"] = max(existing, count)
 
 
+@sentry_sdk.trace
 def save_state(data):
     with open(STATE_FILE, "w") as f:
         json.dump(data, f, indent=2, sort_keys=True)
@@ -200,16 +227,20 @@ def recently_attempted(state, repo, pr_number):
 
 
 def run_gh(args, input_text=None):
-    result = subprocess.run(
-        ["gh"] + args,
-        capture_output=True,
-        text=True,
-        input=input_text,
-    )
-    if result.returncode != 0:
-        print(f"gh {' '.join(args)} failed: {result.stderr.strip()}", file=sys.stderr)
-        return None
-    return result.stdout
+    with sentry_sdk.start_span(name=f"gh {' '.join(args[:3])}") as span:
+        span.set_data("gh.args", args)
+        result = subprocess.run(
+            ["gh"] + args,
+            capture_output=True,
+            text=True,
+            input=input_text,
+        )
+        span.set_data("gh.returncode", result.returncode)
+        if result.returncode != 0:
+            span.set_data("gh.stderr", result.stderr.strip())
+            print(f"gh {' '.join(args)} failed: {result.stderr.strip()}", file=sys.stderr)
+            return None
+        return result.stdout
 
 
 def list_open_prs(repo):
@@ -247,20 +278,40 @@ def get_pr_details(repo, number):
         return None
 
 
-def get_unresolved_review_threads(repo, number):
+def get_unresolved_threads_by_author(repo, number):
+    """Returnerar (by_author, total_unresolved).
+
+    by_author: olösta, ICKE-utdaterade trådar grupperade per bot som öppnade
+    dem (login, gemener) - t.ex. {"coderabbitai": 2, "cubic-dev-ai": 1}.
+    Används för att avgöra VILKEN bots autofix-kommando som ska nudgas -
+    att be en bot "fixa" en tråd mot en diff som redan ändrats (isOutdated)
+    är meningslöst och kan mata in fel kontext, så de exkluderas härifrån.
+
+    total_unresolved: ALLA olösta trådar, INKLUSIVE utdaterade. Utdaterade
+    trådar blockerar fortfarande merge (GitHubs required_review_thread_
+    resolution-regel bryr sig bara om isResolved, inte isOutdated) - de
+    måste därför fortfarande räknas med i gate-logiken (annars tror
+    orkestreraren att en PR är "all clear" fast GitHub fortfarande blockerar
+    den) och landar till sist i den bot-agnostiska @resolve-fallbacken.
+    """
     query = """
     query($owner: String!, $repo: String!, $number: Int!, $endCursor: String) {
       repository(owner: $owner, name: $repo) {
         pullRequest(number: $number) {
           reviewThreads(first: 100, after: $endCursor) {
-            nodes { isResolved }
+            nodes {
+              isResolved
+              isOutdated
+              comments(first: 1) { nodes { author { login } } }
+            }
             pageInfo { hasNextPage endCursor }
           }
         }
       }
     }
     """
-    unresolved = 0
+    by_author = {}
+    total_unresolved = 0
     cursor = None
     while True:
         args = [
@@ -274,11 +325,11 @@ def get_unresolved_review_threads(repo, number):
             args += ["-f", f"endCursor={cursor}"]
         out = run_gh(args)
         if out is None:
-            return unresolved
+            return by_author, total_unresolved
         try:
             data = json.loads(out)
         except json.JSONDecodeError:
-            return unresolved
+            return by_author, total_unresolved
         threads = (
             data.get("data", {})
             .get("repository", {})
@@ -286,13 +337,26 @@ def get_unresolved_review_threads(repo, number):
             .get("reviewThreads", {})
         )
         nodes = threads.get("nodes", [])
-        unresolved += sum(1 for n in nodes if not n.get("isResolved", True))
+        for n in nodes:
+            if n.get("isResolved", True):
+                continue
+            total_unresolved += 1
+            if n.get("isOutdated", False):
+                continue
+            first_comment = (n.get("comments", {}).get("nodes") or [{}])[0]
+            author = ((first_comment.get("author") or {}).get("login") or "unknown").lower()
+            by_author[author] = by_author.get(author, 0) + 1
         page_info = threads.get("pageInfo", {})
         if page_info.get("hasNextPage"):
             cursor = page_info.get("endCursor")
         else:
             break
-    return unresolved
+    return by_author, total_unresolved
+
+
+def get_unresolved_review_threads(repo, number):
+    _, total = get_unresolved_threads_by_author(repo, number)
+    return total
 
 
 def has_coderabbit_check(details):
@@ -473,12 +537,32 @@ def process_pr(repo, number, state):
             return True
         return False
 
-    unresolved = get_unresolved_review_threads(repo, number)
+    by_author, unresolved = get_unresolved_threads_by_author(repo, number)
     if unresolved > 0:
         attempts = autofix_attempts(state, repo, number)
-        if attempts < MAX_AUTOFIX_ATTEMPTS:
-            print(f"  PR #{number}: {unresolved} unresolved thread(s), conflict-free -> nudging autofix (attempt {attempts + 1})")
-            if post_comment(repo, number, NUDGE_AUTOFIX):
+        actionable = by_author.get("coderabbitai", 0) > 0 or by_author.get("cubic-dev-ai", 0) > 0
+        other = unresolved - by_author.get("coderabbitai", 0) - by_author.get("cubic-dev-ai", 0)
+        # Om INGET är nudgningsbart (bara utdaterade trådar och/eller bottar
+        # utan känt autofix-kommando) hoppar vi förbi autofix-försöken helt
+        # och går direkt till @resolve-fallbacken nedan - annars skulle
+        # attempts aldrig öka (record_nudge körs bara vid posted_any) och PR:en
+        # fastnar i en oändlig "ingen åtgärd"-loop som aldrig löser sig.
+        if actionable and attempts < MAX_AUTOFIX_ATTEMPTS:
+            # Varje bot fixar bara sina EGNA trådar när man nudgar den -
+            # CodeRabbits "@coderabbitai autofix" skippar tyst om alla olösta
+            # trådar kommer från cubic-dev-ai/sentry (exakt felet som
+            # motiverade den här uppdelningen). Nudga alla bottar som
+            # faktiskt har olösta, ICKE-utdaterade trådar, i samma körning.
+            posted_any = False
+            if by_author.get("coderabbitai", 0) > 0:
+                print(f"  PR #{number}: {by_author['coderabbitai']} olöst CodeRabbit-tråd(ar) -> nudging autofix (attempt {attempts + 1})")
+                posted_any = post_comment(repo, number, NUDGE_AUTOFIX) or posted_any
+            if by_author.get("cubic-dev-ai", 0) > 0:
+                print(f"  PR #{number}: {by_author['cubic-dev-ai']} olöst cubic-tråd(ar) -> nudging cubic fix")
+                posted_any = post_comment(repo, number, NUDGE_CUBIC_AUTOFIX) or posted_any
+            if other > 0:
+                print(f"  PR #{number}: {other} olöst tråd(ar) utan känt autofix-kommando (utdaterade och/eller övriga bottar som sentry) -> ingen nudge för dem, faller vidare till @resolve när autofix uttöms")
+            if posted_any:
                 record_nudge(state, repo, number, "autofix")
                 return True
             return False
@@ -525,31 +609,68 @@ def process_pr(repo, number, state):
 
 
 def main():
-    state = load_state()
+    with sentry_sdk.start_transaction(op="task", name="orchestrator-run"):
+        state = load_state()
 
-    for repo in REPOS:
-        remaining = quota_remaining(state)
-        if remaining <= 0:
-            print(f"Global quota exhausted ({QUOTA_PER_HOUR}/hour). Stopping run early.")
-            break
+        sentry_sdk.logger.info(
+            "Orchestrator run started for {repo_count} repositories",
+            repo_count=len(REPOS),
+        )
 
-        print(f"== {repo} ==")
-        pr_numbers = list_open_prs(repo)
-        if not pr_numbers:
-            print("  no open PRs")
-            continue
-
-        for number in pr_numbers:
+        for repo in REPOS:
             remaining = quota_remaining(state)
             if remaining <= 0:
+                sentry_sdk.logger.warning(
+                    "Global quota exhausted ({quota}/hour). Stopping run early.",
+                    quota=QUOTA_PER_HOUR,
+                )
                 print(f"Global quota exhausted ({QUOTA_PER_HOUR}/hour). Stopping run early.")
-                save_state(state)
-                return
-            process_pr(repo, number, state)
+                break
 
-    save_state(state)
-    print("Done. Nudges sent this run recorded in queue-state.json.")
+            print(f"== {repo} ==")
+            sentry_sdk.set_tag("github.repo", f"{OWNER}/{repo}")
+
+            with sentry_sdk.start_span(name=f"process_repo {repo}") as repo_span:
+                repo_span.set_data("github.repo", f"{OWNER}/{repo}")
+                pr_numbers = list_open_prs(repo)
+                if not pr_numbers:
+                    print("  no open PRs")
+                    continue
+
+                for number in pr_numbers:
+                    remaining = quota_remaining(state)
+                    if remaining <= 0:
+                        sentry_sdk.logger.warning(
+                            "Global quota exhausted ({quota}/hour). Stopping run early.",
+                            quota=QUOTA_PER_HOUR,
+                        )
+                        print(f"Global quota exhausted ({QUOTA_PER_HOUR}/hour). Stopping run early.")
+                        save_state(state)
+                        return
+                    with sentry_sdk.start_span(name=f"process_pr {repo}#{number}") as pr_span:
+                        pr_span.set_data("github.repo", f"{OWNER}/{repo}")
+                        pr_span.set_data("github.pr_number", number)
+                        process_pr(repo, number, state)
+
+        save_state(state)
+        sentry_sdk.logger.info("Orchestrator run completed")
+        print("Done. Nudges sent this run recorded in queue-state.json.")
 
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except Exception as e:
+        sentry_sdk.capture_exception(e)
+        event_id = sentry_sdk.last_event_id()
+        if event_id and sys.stdin.isatty():
+            notes = input("Describe what you were doing when this failed: ")
+            sentry_sdk.capture_user_feedback({
+                "event_id": event_id,
+                "name": "Operator",
+                "email": "",
+                "comments": notes,
+            })
+        raise
+    finally:
+        sentry_sdk.flush(timeout=5)
