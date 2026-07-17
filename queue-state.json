@@ -1,12 +1,5 @@
 {
-  "nudges": [
-    {
-      "pr": 169,
-      "repo": "bastion",
-      "ts": "2026-07-17T09:03:28.401605+00:00",
-      "type": "review"
-    }
-  ],
+  "nudges": [],
   "prs": {
     "blixten85/bastion#163": {
       "last_attempt": "2026-07-14T22:48:34.162134+00:00"
