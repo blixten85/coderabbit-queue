@@ -1,18 +1,5 @@
 {
-  "nudges": [
-    {
-      "pr": 97,
-      "repo": "plex_clear_watchlist",
-      "ts": "2026-07-17T00:05:20.460481+00:00",
-      "type": "resolve"
-    },
-    {
-      "pr": 140,
-      "repo": "filtered-movies",
-      "ts": "2026-07-17T00:05:44.702876+00:00",
-      "type": "review"
-    }
-  ],
+  "nudges": [],
   "prs": {
     "blixten85/bastion#163": {
       "last_attempt": "2026-07-14T22:48:34.162134+00:00"
