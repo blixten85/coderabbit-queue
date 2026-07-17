@@ -3,13 +3,7 @@
     {
       "pr": 169,
       "repo": "bastion",
-      "ts": "2026-07-17T06:05:50.581699+00:00",
-      "type": "autofix"
-    },
-    {
-      "pr": 168,
-      "repo": "bastion",
-      "ts": "2026-07-17T06:05:53.019065+00:00",
+      "ts": "2026-07-17T07:05:41.877061+00:00",
       "type": "resolve"
     }
   ],
@@ -23,12 +17,14 @@
     },
     "blixten85/bastion#168": {
       "autofix_attempts": 2,
+      "escalated_to_claude": true,
       "last_attempt": "2026-07-17T06:05:53.019065+00:00",
       "resolve_attempts": 1
     },
     "blixten85/bastion#169": {
       "autofix_attempts": 2,
-      "last_attempt": "2026-07-17T06:05:50.581699+00:00"
+      "last_attempt": "2026-07-17T07:05:41.877061+00:00",
+      "resolve_attempts": 1
     },
     "blixten85/docker-idempotent-update#100": {
       "autofix_attempts": 2,
