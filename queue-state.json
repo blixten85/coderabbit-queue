@@ -23,6 +23,7 @@
     },
     "blixten85/bastion#169": {
       "autofix_attempts": 2,
+      "escalated_to_claude": true,
       "last_attempt": "2026-07-17T07:05:41.877061+00:00",
       "resolve_attempts": 1
     },
