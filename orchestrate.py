@@ -81,7 +81,28 @@ def load_state():
     data.setdefault("nudges", [])  # list of {"ts": iso, "repo": str, "pr": int, "type": str}
     data.setdefault("prs", {})  # "owner/repo#N" -> {"last_attempt": iso}
     data.setdefault("rate_limited_until", None)  # iso timestamp, kontobrett
+
+    migrate_merge_conflict_attempts(data)
+
     return data
+
+
+def migrate_merge_conflict_attempts(state):
+    """Seed merge_conflict_attempts counter from existing nudges to avoid
+    resetting attempt counts when the counter was first introduced."""
+    merge_conflict_counts = {}
+    for nudge in state["nudges"]:
+        if nudge.get("type") == "resolve_merge_conflict":
+            repo = nudge.get("repo")
+            pr = nudge.get("pr")
+            if repo and pr:
+                key = f"{OWNER}/{repo}#{pr}"
+                merge_conflict_counts[key] = merge_conflict_counts.get(key, 0) + 1
+
+    for key, count in merge_conflict_counts.items():
+        if key in state["prs"]:
+            existing = state["prs"][key].get("merge_conflict_attempts", 0)
+            state["prs"][key]["merge_conflict_attempts"] = max(existing, count)
 
 
 def save_state(data):
