@@ -3,14 +3,14 @@
     {
       "pr": 169,
       "repo": "bastion",
-      "ts": "2026-07-17T05:03:56.507076+00:00",
+      "ts": "2026-07-17T06:05:50.581699+00:00",
       "type": "autofix"
     },
     {
       "pr": 168,
       "repo": "bastion",
-      "ts": "2026-07-17T05:03:59.311272+00:00",
-      "type": "autofix"
+      "ts": "2026-07-17T06:05:53.019065+00:00",
+      "type": "resolve"
     }
   ],
   "prs": {
@@ -23,11 +23,12 @@
     },
     "blixten85/bastion#168": {
       "autofix_attempts": 2,
-      "last_attempt": "2026-07-17T05:03:59.311272+00:00"
+      "last_attempt": "2026-07-17T06:05:53.019065+00:00",
+      "resolve_attempts": 1
     },
     "blixten85/bastion#169": {
-      "autofix_attempts": 1,
-      "last_attempt": "2026-07-17T05:03:56.507076+00:00"
+      "autofix_attempts": 2,
+      "last_attempt": "2026-07-17T06:05:50.581699+00:00"
     },
     "blixten85/docker-idempotent-update#100": {
       "autofix_attempts": 2,
