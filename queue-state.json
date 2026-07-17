@@ -3,14 +3,14 @@
     {
       "pr": 16,
       "repo": "ops-hub",
-      "ts": "2026-07-17T16:04:52.290723+00:00",
+      "ts": "2026-07-17T16:43:36.280151+00:00",
       "type": "autofix"
     },
     {
       "pr": 16,
       "repo": "ops-hub",
-      "ts": "2026-07-17T16:43:36.280151+00:00",
-      "type": "autofix"
+      "ts": "2026-07-17T17:26:16.645170+00:00",
+      "type": "resolve"
     }
   ],
   "prs": {
@@ -76,7 +76,8 @@
     },
     "blixten85/ops-hub#16": {
       "autofix_attempts": 2,
-      "last_attempt": "2026-07-17T16:43:36.280151+00:00"
+      "last_attempt": "2026-07-17T17:26:16.645170+00:00",
+      "resolve_attempts": 1
     },
     "blixten85/ops-hub#7": {
       "autofix_attempts": 2,
