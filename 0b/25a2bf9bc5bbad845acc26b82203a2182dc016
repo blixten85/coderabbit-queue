@@ -1,0 +1,21 @@
+orchestrate.py
+  s_8850151e11397b::t_ce5f09a0369321 606-616
+  s_8850151e11397b::t_115f28e8261729 413-424
+  s_8850151e11397b::t_9cc039130a2ce5 73-81
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "0b25a2bf9bc5bbad845acc26b82203a2182dc016",
+  "prompts": {},
+  "sessions": {
+    "s_8850151e11397b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "0b715bbe-66aa-4f93-ac74-3f76f2736de8",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Anders Eriksson <36226327+blixten85@users.noreply.github.com>"
+    }
+  }
+}
