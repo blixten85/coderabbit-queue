@@ -64,6 +64,7 @@ PER_PR_COOLDOWN_MINUTES = 20
 MAX_AUTOFIX_ATTEMPTS = 2  # give up on code fixes after this many tries, then fall back to @resolve
 MAX_RESOLVE_ATTEMPTS = 1  # final fallback after autofix is exhausted — only try once
 MAX_MERGE_CONFLICT_ATTEMPTS = 2  # give up nudging CodeRabbit's merge-conflict resolver after this many tries
+MAX_CUBIC_RETRY_ATTEMPTS = 2  # cubic's own "command failed: Unknown error" — retry this many times, then give up (no spam)
 
 NUDGE_MERGE_CONFLICT = "@coderabbitai resolve merge conflict"
 NUDGE_REVIEW = "@coderabbitai review"
@@ -87,6 +88,13 @@ NUDGE_CUBIC_AUTOFIX = "@cubic-dev-ai fix this issue in this branch"
 RATE_LIMIT_PATTERN = re.compile(
     r"more reviews will be available in (\d+)\s*(minute|hour)s?", re.IGNORECASE
 )
+
+# cubics eget svar när den interna "fix this issue in this branch"-hanteraren
+# kraschar innan den ens hinner börja jobba (bekräftat ordagrant 2026-07-17:
+# "cubic command failed: Unknown error") — transient, inte en signal om att
+# fyndet är ogiltigt. Skiljs från "Working..."/riktiga svar genom att den
+# INTE innehåller en progress-länk.
+CUBIC_COMMAND_FAILED_PATTERN = re.compile(r"cubic command failed", re.IGNORECASE)
 
 
 def now_utc():
@@ -160,11 +168,18 @@ def record_nudge(state, repo, pr_number, nudge_type):
         entry["resolve_attempts"] = entry.get("resolve_attempts", 0) + 1
     if nudge_type == "resolve_merge_conflict":
         entry["merge_conflict_attempts"] = entry.get("merge_conflict_attempts", 0) + 1
+    if nudge_type == "cubic_retry":
+        entry["cubic_retry_attempts"] = entry.get("cubic_retry_attempts", 0) + 1
 
 
 def autofix_attempts(state, repo, pr_number):
     key = f"{OWNER}/{repo}#{pr_number}"
     return state["prs"].get(key, {}).get("autofix_attempts", 0)
+
+
+def cubic_retry_attempts(state, repo, pr_number):
+    key = f"{OWNER}/{repo}#{pr_number}"
+    return state["prs"].get(key, {}).get("cubic_retry_attempts", 0)
 
 
 def resolve_attempts(state, repo, pr_number):
@@ -215,6 +230,24 @@ def detect_and_record_rate_limit(state, details):
             print(f"  CodeRabbit rate limit upptäckt i kommentar -> backar av till {deadline.isoformat()}")
         return True
     return False
+
+
+def last_cubic_command_failed(details):
+    """True om det SENASTE kommentaren på PR:en är cubics eget
+    "command failed: Unknown error" — dvs vårt senaste nudge-försök till
+    cubic kraschade innan den ens började jobba (skiljer sig från en riktig
+    "Working..."-kvittens eller ett faktiskt granskningssvar). Kollar bara
+    den absolut sista kommentaren, inte alla cubic-kommentarer historiskt -
+    annars skulle en redan-löst gammal krasch trigga nya retries för evigt."""
+    comments = details.get("comments") or []
+    if not comments:
+        return False
+    last = comments[-1]
+    author = (last.get("author") or {}).get("login", "")
+    if "cubic" not in author.lower():
+        return False
+    body = last.get("body") or ""
+    return bool(CUBIC_COMMAND_FAILED_PATTERN.search(body))
 
 
 def recently_attempted(state, repo, pr_number):
@@ -478,13 +511,32 @@ def enable_auto_merge(repo, pr_id):
 
 def process_pr(repo, number, state):
     """Return True if a nudge was sent (consumes quota), False otherwise."""
-    if recently_attempted(state, repo, number):
-        print(f"  PR #{number}: skipped (nudged within last {PER_PR_COOLDOWN_MINUTES}m)")
-        return False
-
     details = get_pr_details(repo, number)
     if details is None:
         print(f"  PR #{number}: could not fetch details, skipping")
+        return False
+
+    # cubics egen "command failed"-krasch kollas FÖRE den vanliga
+    # PER_PR_COOLDOWN_MINUTES-spärren nedan — annars hade en transient
+    # krasch tvingat oss vänta 20 minuter innan vi ens fick FÖRSÖKA igen.
+    # Säkert att köra tidigt ändå: gated på att SENASTE kommentaren
+    # faktiskt är felet (inte en gissning) OCH ett hårt tak
+    # (MAX_CUBIC_RETRY_ATTEMPTS) så det aldrig blir en spam-loop - lyckas
+    # cubic (eller vi ger upp efter taket), slutar den senaste kommentaren
+    # matcha mönstret och den här grenen triggar aldrig om.
+    if last_cubic_command_failed(details):
+        retries = cubic_retry_attempts(state, repo, number)
+        if retries < MAX_CUBIC_RETRY_ATTEMPTS:
+            print(f"  PR #{number}: cubic \"command failed\" upptäckt -> försöker igen (retry {retries + 1}/{MAX_CUBIC_RETRY_ATTEMPTS})")
+            if post_comment(repo, number, NUDGE_CUBIC_AUTOFIX):
+                record_nudge(state, repo, number, "cubic_retry")
+                return True
+            return False
+        print(f"  PR #{number}: cubic \"command failed\" kvarstår efter {retries} retry-försök -> ger upp, ingen mer spam")
+        return False
+
+    if recently_attempted(state, repo, number):
+        print(f"  PR #{number}: skipped (nudged within last {PER_PR_COOLDOWN_MINUTES}m)")
         return False
 
     # Läs CodeRabbits egna kommentarer efter en rate-limit-signal INNAN vi
