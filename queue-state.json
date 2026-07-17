@@ -1,9 +1,15 @@
 {
   "nudges": [
     {
+      "pr": 169,
+      "repo": "bastion",
+      "ts": "2026-07-17T05:03:56.507076+00:00",
+      "type": "autofix"
+    },
+    {
       "pr": 168,
       "repo": "bastion",
-      "ts": "2026-07-17T03:46:22.820836+00:00",
+      "ts": "2026-07-17T05:03:59.311272+00:00",
       "type": "autofix"
     }
   ],
@@ -16,8 +22,12 @@
       "last_attempt": "2026-07-15T01:34:31.642958+00:00"
     },
     "blixten85/bastion#168": {
+      "autofix_attempts": 2,
+      "last_attempt": "2026-07-17T05:03:59.311272+00:00"
+    },
+    "blixten85/bastion#169": {
       "autofix_attempts": 1,
-      "last_attempt": "2026-07-17T03:46:22.820836+00:00"
+      "last_attempt": "2026-07-17T05:03:56.507076+00:00"
     },
     "blixten85/docker-idempotent-update#100": {
       "autofix_attempts": 2,
