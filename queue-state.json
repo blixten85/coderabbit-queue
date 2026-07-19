@@ -1,28 +1,28 @@
 {
   "nudges": [
     {
+      "pr": 182,
+      "repo": "bastion",
+      "ts": "2026-07-19T23:25:13.276841+00:00",
+      "type": "review"
+    },
+    {
+      "pr": 181,
+      "repo": "bastion",
+      "ts": "2026-07-19T23:25:15.245951+00:00",
+      "type": "autofix"
+    },
+    {
       "pr": 256,
       "repo": "scraper",
-      "ts": "2026-07-19T22:23:52.107001+00:00",
+      "ts": "2026-07-19T23:25:18.610415+00:00",
       "type": "review"
     },
     {
       "pr": 60,
       "repo": "routines-relay",
-      "ts": "2026-07-19T22:23:54.852460+00:00",
-      "type": "autofix"
-    },
-    {
-      "pr": 17,
-      "repo": "ops-hub",
-      "ts": "2026-07-19T22:23:56.749104+00:00",
-      "type": "autofix"
-    },
-    {
-      "pr": 11,
-      "repo": "ops-hub",
-      "ts": "2026-07-19T22:23:58.266284+00:00",
-      "type": "review"
+      "ts": "2026-07-19T23:25:20.963663+00:00",
+      "type": "resolve"
     }
   ],
   "prs": {
@@ -50,6 +50,13 @@
       "escalated_to_claude": true,
       "last_attempt": "2026-07-19T17:40:12.341163+00:00",
       "resolve_attempts": 1
+    },
+    "blixten85/bastion#181": {
+      "autofix_attempts": 1,
+      "last_attempt": "2026-07-19T23:25:15.245951+00:00"
+    },
+    "blixten85/bastion#182": {
+      "last_attempt": "2026-07-19T23:25:13.276841+00:00"
     },
     "blixten85/docker-idempotent-update#100": {
       "autofix_attempts": 2,
@@ -217,7 +224,8 @@
     },
     "blixten85/routines-relay#60": {
       "autofix_attempts": 2,
-      "last_attempt": "2026-07-19T22:23:54.852460+00:00"
+      "last_attempt": "2026-07-19T23:25:20.963663+00:00",
+      "resolve_attempts": 1
     },
     "blixten85/scraper#242": {
       "last_attempt": "2026-07-15T01:34:45.994714+00:00"
@@ -249,7 +257,7 @@
       "resolve_attempts": 1
     },
     "blixten85/scraper#256": {
-      "last_attempt": "2026-07-19T22:23:52.107001+00:00"
+      "last_attempt": "2026-07-19T23:25:18.610415+00:00"
     }
   },
   "rate_limited_until": "2026-07-16T06:28:09.233552+00:00"
