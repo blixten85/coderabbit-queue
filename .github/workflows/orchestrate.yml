@@ -24,6 +24,9 @@ jobs:
         with:
           python-version: '3.12'
 
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
       - name: Run orchestrator
         env:
           GH_TOKEN: ${{ secrets.CR_QUEUE_TOKEN }}
