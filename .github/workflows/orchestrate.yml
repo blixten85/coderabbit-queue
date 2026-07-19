@@ -19,7 +19,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          token: ${{ secrets.CR_QUEUE_TOKEN }}
+          persist-credentials: false
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -45,4 +45,6 @@ jobs:
           git config user.email "actions@users.noreply.github.com"
           git add queue-state.json
           git commit -m "chore: update queue-state.json [skip ci]"
-          git push
+          git push "https://x-access-token:${CR_QUEUE_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" HEAD:main
+        env:
+          CR_QUEUE_TOKEN: ${{ secrets.CR_QUEUE_TOKEN }}
