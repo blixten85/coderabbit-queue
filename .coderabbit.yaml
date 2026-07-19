@@ -1,0 +1,40 @@
+# yaml-language-server: $schema=https://coderabbit.ai/integrations/schema.v2.json
+#
+# Detta repo körs helt obevakat (ingen människa läser varje kommentar) och
+# är själva kontrollmekanismen för resten av flottans PR-granskning - därför
+# assertive profil (inte kontots default) och ingen auto-pause som kan tysta
+# granskningen mitt i en autofix-cykel utan att någon märker det.
+reviews:
+  profile: assertive
+  request_changes_workflow: true
+  auto_review:
+    enabled: true
+    drafts: true
+    auto_pause_after_reviewed_commits: 0
+  path_filters:
+    - "!queue-state.json" # auto-genererad state-fil, ändras varje körning
+  path_instructions:
+    - path: "orchestrate.py"
+      instructions: >
+        QUOTA_PER_HOUR-ledgern (record_nudge/quota_remaining) är avsiktligt
+        kalibrerad ENBART mot CodeRabbits konto-breda 5/timme-tak (se
+        modulens docstring). @sentry review- och cubic-nudgar konsumerar
+        inte CodeRabbits kvot och räknas medvetet inte i samma ledger - det
+        är inte en bugg om en granskning påpekar att andra bottars nudgar
+        "underräknas" i den. @resolve-fallbacken (process_pr, sista delen)
+        får bara stänga trådar från coderabbitai/cubic-dev-ai (bottar
+        autofix redan haft chansen att nudga) - trådar från alla andra
+        författare (Sentry/Seer, okända bottar, människor) ska ALDRIG
+        force-resolvas, bara eskaleras till @claude.
+  finishing_touches:
+    autofix:
+      enabled: true
+  pre_merge_checks:
+    title:
+      mode: warning
+    description:
+      mode: warning
+
+knowledge_base:
+  learnings:
+    scope: auto
