@@ -30,6 +30,7 @@ jobs:
       - name: Run orchestrator
         env:
           GH_TOKEN: ${{ secrets.CR_QUEUE_TOKEN }}
+          SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
         run: python3 orchestrate.py
 
       - name: Commit queue-state.json if changed

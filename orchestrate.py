@@ -15,17 +15,18 @@ read/write across all target repos) — `gh` and `gh api` pick it up
 automatically.
 """
 import json
+import os
 import re
 import subprocess
 import sys
 from datetime import datetime, timedelta, timezone
 
 import sentry_sdk
-from sentry_sdk.integrations.mcp import MCPIntegration
 
 sentry_sdk.init(
-    dsn="https://f53bfdb9cbc623daf3860a06ea6a3855@o4511717224480768.ingest.de.sentry.io/4511746671181904",
-    send_default_pii=True,
+    dsn=os.environ.get("SENTRY_DSN"),
+    send_default_pii=False,
+    include_local_variables=False,
     # Tracing
     traces_sample_rate=1.0,
     # Profiling (continuous, trace-lifecycle)
@@ -33,8 +34,6 @@ sentry_sdk.init(
     profile_lifecycle="trace",
     # Logs
     enable_logs=True,
-    # MCP Observability
-    integrations=[MCPIntegration()],
 )
 
 OWNER = "blixten85"
@@ -648,13 +647,16 @@ def process_pr(repo, number, state):
                 return True
             return False
 
-        # Autofix gav upp — sista fallback: tvinga fram grönt genom att lösa
-        # ALLA kvarvarande trådar, oavsett allvarlighetsgrad (uttrycklig
-        # instruktion: full automatisering, ingen severity-spärr). RISK,
-        # medvetet accepterad: @resolve verifierar inte att koden faktiskt är
-        # fixad, den stänger bara konversationerna — ett Critical/Security-
-        # fynd kan mergas OGRANSKAT av en människa om autofix aldrig lyckades
-        # fixa det på riktigt. Körs bara EN gång per PR (MAX_RESOLVE_ATTEMPTS).
+        # Autofix gav upp — sista fallback: `@coderabbitai resolve` löser
+        # CodeRabbits EGNA kvarvarande trådar (bekräftat mot CodeRabbits
+        # dokumentation: kommandot rör bara dess egna kommentarer, aldrig
+        # cubic-dev-ai/Sentry/andras). RISK, medvetet accepterad: @resolve
+        # verifierar inte att koden faktiskt är fixad, den stänger bara
+        # konversationerna — ett CodeRabbit-fynd kan mergas OGRANSKAT av en
+        # människa om autofix aldrig lyckades fixa det på riktigt. Trådar
+        # från cubic-dev-ai eller andra bottar/människor rörs INTE av detta
+        # kommando och förblir olösta (blockerar merge tills de hanteras
+        # separat). Körs bara EN gång per PR (MAX_RESOLVE_ATTEMPTS).
         resolved_tries = resolve_attempts(state, repo, number)
         if resolved_tries >= MAX_RESOLVE_ATTEMPTS:
             if already_escalated(state, repo, number):
