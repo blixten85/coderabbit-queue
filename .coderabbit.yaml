@@ -16,13 +16,15 @@ reviews:
   path_instructions:
     - path: "orchestrate.py"
       instructions: >
-        QUOTA_PER_HOUR-ledgern (record_nudge/quota_remaining) räknar ALLA
-        nudgar - CodeRabbit, Sentry OCH cubic - i samma ledger för att
-        undvika spam och respektera GitHubs rate limits. Även om @sentry
-        review och cubic-nudgar inte konsumerar CodeRabbits konto-breda
-        5/timme-kvot tekniskt sett, räknas de ändå mot vår egen
-        orkestrator-kvot (QUOTA_PER_HOUR) för att hålla total nudge-volym
-        under kontroll. @resolve-fallbacken (process_pr, sista delen) får
+        QUOTA_PER_HOUR-ledgern (record_nudge/quota_remaining) räknar
+        nudge-BATCHAR (en record_nudge per process_pr-körning som postar
+        kommentarer), inte enskilda bot-kommentarer - om både CodeRabbit
+        och Sentry/cubic nudgas i samma process_pr-körning räknas det som
+        EN ledger-slot, inte två. Detta betyder att upp till 8 individuella
+        kommentarer kan postas inom den nominella 4-nudge-budgeten (QUOTA_
+        PER_HOUR=4). Syftet är att undvika spam och respektera GitHubs rate
+        limits genom att begränsa ANTALET PR:er som nudgas per timme, inte
+        det totala antalet kommentarer. @resolve-fallbacken (process_pr, sista delen) får
         bara stänga trådar från coderabbitai/cubic-dev-ai (bottar autofix
         redan haft chansen att nudga) - trådar från alla andra författare
         (Sentry/Seer, okända bottar, människor) ska ALDRIG force-resolvas,
