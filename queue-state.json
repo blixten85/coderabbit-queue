@@ -3,25 +3,25 @@
     {
       "pr": 256,
       "repo": "scraper",
-      "ts": "2026-07-19T20:03:05.735721+00:00",
+      "ts": "2026-07-19T21:23:39.330344+00:00",
       "type": "review"
+    },
+    {
+      "pr": 60,
+      "repo": "routines-relay",
+      "ts": "2026-07-19T21:23:41.835389+00:00",
+      "type": "autofix"
+    },
+    {
+      "pr": 17,
+      "repo": "ops-hub",
+      "ts": "2026-07-19T21:23:44.642855+00:00",
+      "type": "autofix"
     },
     {
       "pr": 11,
       "repo": "ops-hub",
-      "ts": "2026-07-19T20:03:07.699088+00:00",
-      "type": "review"
-    },
-    {
-      "pr": 136,
-      "repo": "product-describer",
-      "ts": "2026-07-19T20:03:09.765974+00:00",
-      "type": "review"
-    },
-    {
-      "pr": 135,
-      "repo": "product-describer",
-      "ts": "2026-07-19T20:03:11.238097+00:00",
+      "ts": "2026-07-19T21:23:46.699257+00:00",
       "type": "review"
     }
   ],
@@ -83,7 +83,7 @@
       "last_attempt": "2026-07-15T05:01:46.127853+00:00"
     },
     "blixten85/ops-hub#11": {
-      "last_attempt": "2026-07-19T20:03:07.699088+00:00"
+      "last_attempt": "2026-07-19T21:23:46.699257+00:00"
     },
     "blixten85/ops-hub#12": {
       "last_attempt": "2026-07-15T03:45:40.022287+00:00"
@@ -97,6 +97,10 @@
       "escalated_to_claude": true,
       "last_attempt": "2026-07-17T17:26:16.645170+00:00",
       "resolve_attempts": 1
+    },
+    "blixten85/ops-hub#17": {
+      "autofix_attempts": 1,
+      "last_attempt": "2026-07-19T21:23:44.642855+00:00"
     },
     "blixten85/ops-hub#7": {
       "autofix_attempts": 2,
@@ -211,6 +215,10 @@
       "last_attempt": "2026-07-16T19:02:43.679206+00:00",
       "resolve_attempts": 1
     },
+    "blixten85/routines-relay#60": {
+      "autofix_attempts": 1,
+      "last_attempt": "2026-07-19T21:23:41.835389+00:00"
+    },
     "blixten85/scraper#242": {
       "last_attempt": "2026-07-15T01:34:45.994714+00:00"
     },
@@ -241,7 +249,7 @@
       "resolve_attempts": 1
     },
     "blixten85/scraper#256": {
-      "last_attempt": "2026-07-19T20:03:05.735721+00:00"
+      "last_attempt": "2026-07-19T21:23:39.330344+00:00"
     }
   },
   "rate_limited_until": "2026-07-16T06:28:09.233552+00:00"
