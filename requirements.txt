@@ -1,1 +1,1 @@
-sentry-sdk>=2.66.0
+sentry-sdk>=2.66.0,<3
