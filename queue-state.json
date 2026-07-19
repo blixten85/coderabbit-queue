@@ -1,5 +1,30 @@
 {
-  "nudges": [],
+  "nudges": [
+    {
+      "pr": 256,
+      "repo": "scraper",
+      "ts": "2026-07-19T13:49:25.030500+00:00",
+      "type": "review"
+    },
+    {
+      "pr": 11,
+      "repo": "ops-hub",
+      "ts": "2026-07-19T13:49:26.922949+00:00",
+      "type": "review"
+    },
+    {
+      "pr": 136,
+      "repo": "product-describer",
+      "ts": "2026-07-19T13:49:28.517077+00:00",
+      "type": "review"
+    },
+    {
+      "pr": 135,
+      "repo": "product-describer",
+      "ts": "2026-07-19T13:49:29.966414+00:00",
+      "type": "review"
+    }
+  ],
   "prs": {
     "blixten85/bastion#163": {
       "last_attempt": "2026-07-14T22:48:34.162134+00:00"
@@ -52,7 +77,7 @@
       "last_attempt": "2026-07-15T05:01:46.127853+00:00"
     },
     "blixten85/ops-hub#11": {
-      "last_attempt": "2026-07-15T03:45:42.351719+00:00"
+      "last_attempt": "2026-07-19T13:49:26.922949+00:00"
     },
     "blixten85/ops-hub#12": {
       "last_attempt": "2026-07-15T03:45:40.022287+00:00"
@@ -140,6 +165,12 @@
     "blixten85/product-describer#134": {
       "last_attempt": "2026-07-15T10:59:11.796133+00:00"
     },
+    "blixten85/product-describer#135": {
+      "last_attempt": "2026-07-19T13:49:29.966414+00:00"
+    },
+    "blixten85/product-describer#136": {
+      "last_attempt": "2026-07-19T13:49:28.517077+00:00"
+    },
     "blixten85/product-describer-cloudflare#100": {
       "autofix_attempts": 1,
       "last_attempt": "2026-07-16T16:30:55.842089+00:00"
@@ -204,7 +235,7 @@
       "resolve_attempts": 1
     },
     "blixten85/scraper#256": {
-      "last_attempt": "2026-07-15T10:58:58.469803+00:00"
+      "last_attempt": "2026-07-19T13:49:25.030500+00:00"
     }
   },
   "rate_limited_until": "2026-07-16T06:28:09.233552+00:00"
