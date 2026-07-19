@@ -16,16 +16,17 @@ reviews:
   path_instructions:
     - path: "orchestrate.py"
       instructions: >
-        QUOTA_PER_HOUR-ledgern (record_nudge/quota_remaining) är avsiktligt
-        kalibrerad ENBART mot CodeRabbits konto-breda 5/timme-tak (se
-        modulens docstring). @sentry review- och cubic-nudgar konsumerar
-        inte CodeRabbits kvot och räknas medvetet inte i samma ledger - det
-        är inte en bugg om en granskning påpekar att andra bottars nudgar
-        "underräknas" i den. @resolve-fallbacken (process_pr, sista delen)
-        får bara stänga trådar från coderabbitai/cubic-dev-ai (bottar
-        autofix redan haft chansen att nudga) - trådar från alla andra
-        författare (Sentry/Seer, okända bottar, människor) ska ALDRIG
-        force-resolvas, bara eskaleras till @claude.
+        QUOTA_PER_HOUR-ledgern (record_nudge/quota_remaining) räknar ALLA
+        nudgar - CodeRabbit, Sentry OCH cubic - i samma ledger för att
+        undvika spam och respektera GitHubs rate limits. Även om @sentry
+        review och cubic-nudgar inte konsumerar CodeRabbits konto-breda
+        5/timme-kvot tekniskt sett, räknas de ändå mot vår egen
+        orkestrator-kvot (QUOTA_PER_HOUR) för att hålla total nudge-volym
+        under kontroll. @resolve-fallbacken (process_pr, sista delen) får
+        bara stänga trådar från coderabbitai/cubic-dev-ai (bottar autofix
+        redan haft chansen att nudga) - trådar från alla andra författare
+        (Sentry/Seer, okända bottar, människor) ska ALDRIG force-resolvas,
+        bara eskaleras till @claude.
   finishing_touches:
     autofix:
       enabled: true
