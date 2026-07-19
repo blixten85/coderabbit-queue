@@ -21,7 +21,6 @@ import sys
 from datetime import datetime, timedelta, timezone
 
 import sentry_sdk
-from sentry_sdk.integrations.mcp import MCPIntegration
 
 sentry_sdk.init(
     dsn="https://f53bfdb9cbc623daf3860a06ea6a3855@o4511717224480768.ingest.de.sentry.io/4511746671181904",
@@ -33,8 +32,6 @@ sentry_sdk.init(
     profile_lifecycle="trace",
     # Logs
     enable_logs=True,
-    # MCP Observability
-    integrations=[MCPIntegration()],
 )
 
 OWNER = "blixten85"
