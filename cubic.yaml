@@ -13,19 +13,20 @@ reviews:
   check_drafts: true
   resolve_threads_when_addressed: true
   auto_approve: low_risk_only
+  auto_approve_behavior: live
   custom_instructions: |
     QUOTA_PER_HOUR-ledgern i orchestrate.py (record_nudge/quota_remaining)
     är avsiktligt kalibrerad ENBART mot CodeRabbits konto-breda 5/timme-tak.
-    @sentry review- och cubic-nudgar konsumerar inte CodeRabbits kvot och
-    räknas medvetet inte i samma ledger - det är inte en bugg om det ser ut
-    som att andra bottars nudgar "underräknas" i den.
+    Sentry/cubic nudgar räknas IN i den delade ledgern när deras process_pr
+    batch anropar record_nudge - det är inte en bugg om det ser ut som att
+    de räknas tillsammans med CodeRabbit-kvoten.
 
     @coderabbitai resolve löser BARA CodeRabbits egna trådar (bekräftat mot
     CodeRabbits dokumentation) - aldrig cubic-dev-ai/Sentry/andras. Trådar
-    från coderabbitai/cubic-dev-ai (bottar autofix redan haft chansen att
-    nudga) får force-resolvas som sista utväg i process_pr(). Trådar från
-    alla andra författare (Sentry/Seer, okända bottar, människor) ska
-    ALDRIG force-resolvas, bara eskaleras till @claude.
+    från coderabbitai får force-resolvas som sista utväg i process_pr().
+    Trådar från cubic-dev-ai måste lämnas öppna för hantering/eskalering.
+    Trådar från alla andra författare (Sentry/Seer, okända bottar, människor)
+    ska ALDRIG force-resolvas, bara eskaleras till @claude.
   ignore:
     files:
       - queue-state.json
