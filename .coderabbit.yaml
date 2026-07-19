@@ -25,8 +25,8 @@ reviews:
         (QUOTA_PER_HOUR=4). Syftet är att undvika spam och respektera GitHubs rate
         limits genom att begränsa ANTALET PR:er som nudgas per timme, inte
         det totala antalet kommentarer. @resolve-fallbacken (process_pr, sista delen) får
-        bara stänga trådar från coderabbitai/cubic-dev-ai (bottar autofix
-        redan haft chansen att nudga) - trådar från alla andra författare
+        bara stänga trådar från coderabbitai (CodeRabbits kommando rör bara dess egna
+        kommentarer) - trådar från cubic-dev-ai och alla andra författare
         (Sentry/Seer, okända bottar, människor) ska ALDRIG force-resolvas,
         bara eskaleras till @claude.
   finishing_touches:
