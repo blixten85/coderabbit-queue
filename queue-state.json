@@ -1,27 +1,27 @@
 {
   "nudges": [
     {
+      "pr": 172,
+      "repo": "bastion",
+      "ts": "2026-07-19T15:22:07.758142+00:00",
+      "type": "autofix"
+    },
+    {
       "pr": 256,
       "repo": "scraper",
-      "ts": "2026-07-19T13:49:25.030500+00:00",
+      "ts": "2026-07-19T15:22:09.709702+00:00",
       "type": "review"
     },
     {
       "pr": 11,
       "repo": "ops-hub",
-      "ts": "2026-07-19T13:49:26.922949+00:00",
+      "ts": "2026-07-19T15:22:11.643798+00:00",
       "type": "review"
     },
     {
       "pr": 136,
       "repo": "product-describer",
-      "ts": "2026-07-19T13:49:28.517077+00:00",
-      "type": "review"
-    },
-    {
-      "pr": 135,
-      "repo": "product-describer",
-      "ts": "2026-07-19T13:49:29.966414+00:00",
+      "ts": "2026-07-19T15:22:13.349511+00:00",
       "type": "review"
     }
   ],
@@ -44,6 +44,10 @@
       "escalated_to_claude": true,
       "last_attempt": "2026-07-17T09:03:28.401605+00:00",
       "resolve_attempts": 1
+    },
+    "blixten85/bastion#172": {
+      "autofix_attempts": 1,
+      "last_attempt": "2026-07-19T15:22:07.758142+00:00"
     },
     "blixten85/docker-idempotent-update#100": {
       "autofix_attempts": 2,
@@ -77,7 +81,7 @@
       "last_attempt": "2026-07-15T05:01:46.127853+00:00"
     },
     "blixten85/ops-hub#11": {
-      "last_attempt": "2026-07-19T13:49:26.922949+00:00"
+      "last_attempt": "2026-07-19T15:22:11.643798+00:00"
     },
     "blixten85/ops-hub#12": {
       "last_attempt": "2026-07-15T03:45:40.022287+00:00"
@@ -169,7 +173,7 @@
       "last_attempt": "2026-07-19T13:49:29.966414+00:00"
     },
     "blixten85/product-describer#136": {
-      "last_attempt": "2026-07-19T13:49:28.517077+00:00"
+      "last_attempt": "2026-07-19T15:22:13.349511+00:00"
     },
     "blixten85/product-describer-cloudflare#100": {
       "autofix_attempts": 1,
@@ -235,7 +239,7 @@
       "resolve_attempts": 1
     },
     "blixten85/scraper#256": {
-      "last_attempt": "2026-07-19T13:49:25.030500+00:00"
+      "last_attempt": "2026-07-19T15:22:09.709702+00:00"
     }
   },
   "rate_limited_until": "2026-07-16T06:28:09.233552+00:00"
