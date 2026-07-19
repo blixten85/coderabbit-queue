@@ -1,0 +1,23 @@
+requirements.txt
+  s_5551af23996b65::t_9bf6bb739cccc0 1
+.github/workflows/orchestrate.yml
+  s_5551af23996b65::t_33e215782c1bc4 33
+orchestrate.py
+  s_5551af23996b65::t_36bdea08f52540 18,27-29
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "701db208ae2cf9ec12ff277c08d95b26000639d6",
+  "prompts": {},
+  "sessions": {
+    "s_5551af23996b65": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "af2de22b-2d5b-4cbd-8ead-76851390d57f",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Anders Eriksson <36226327+blixten85@users.noreply.github.com>"
+    }
+  }
+}
