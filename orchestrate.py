@@ -15,6 +15,7 @@ read/write across all target repos) — `gh` and `gh api` pick it up
 automatically.
 """
 import json
+import os
 import re
 import subprocess
 import sys
@@ -23,8 +24,9 @@ from datetime import datetime, timedelta, timezone
 import sentry_sdk
 
 sentry_sdk.init(
-    dsn="https://f53bfdb9cbc623daf3860a06ea6a3855@o4511717224480768.ingest.de.sentry.io/4511746671181904",
-    send_default_pii=True,
+    dsn=os.environ.get("SENTRY_DSN"),
+    send_default_pii=False,
+    include_local_variables=False,
     # Tracing
     traces_sample_rate=1.0,
     # Profiling (continuous, trace-lifecycle)
