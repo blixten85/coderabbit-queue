@@ -1,0 +1,19 @@
+.coderabbit.yaml
+  s_5551af23996b65::t_8cd449fb441a96 1-40
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "092d52822dbea59a346325c955c8b5ae75dffdf1",
+  "prompts": {},
+  "sessions": {
+    "s_5551af23996b65": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "af2de22b-2d5b-4cbd-8ead-76851390d57f",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Anders Eriksson <36226327+blixten85@users.noreply.github.com>"
+    }
+  }
+}
