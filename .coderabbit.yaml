@@ -1,0 +1,43 @@
+# yaml-language-server: $schema=https://coderabbit.ai/integrations/schema.v2.json
+#
+# Detta repo körs helt obevakat (ingen människa läser varje kommentar) och
+# är själva kontrollmekanismen för resten av flottans PR-granskning - därför
+# assertive profil (inte kontots default) och ingen auto-pause som kan tysta
+# granskningen mitt i en autofix-cykel utan att någon märker det.
+reviews:
+  profile: assertive
+  request_changes_workflow: true
+  auto_review:
+    enabled: true
+    drafts: true
+    auto_pause_after_reviewed_commits: 0
+  path_filters:
+    - "!queue-state.json" # auto-genererad state-fil, ändras varje körning
+  path_instructions:
+    - path: "orchestrate.py"
+      instructions: >
+        QUOTA_PER_HOUR-ledgern (record_nudge/quota_remaining) räknar
+        nudge-BATCHAR (en record_nudge per process_pr-körning som postar
+        kommentarer), inte enskilda bot-kommentarer - om både CodeRabbit
+        och Sentry/cubic nudgas i samma process_pr-körning räknas det som
+        EN ledger-slot, inte två. Detta betyder att upp till 8 individuella
+        kommentarer kan postas inom den nominella 4-nudge-budgeten
+        (QUOTA_PER_HOUR=4). Syftet är att undvika spam och respektera GitHubs rate
+        limits genom att begränsa ANTALET PR:er som nudgas per timme, inte
+        det totala antalet kommentarer. @resolve-fallbacken (process_pr, sista delen) får
+        bara stänga trådar från coderabbitai (CodeRabbits kommando rör bara dess egna
+        kommentarer) - trådar från cubic-dev-ai och alla andra författare
+        (Sentry/Seer, okända bottar, människor) ska ALDRIG force-resolvas,
+        bara eskaleras till @claude.
+  finishing_touches:
+    autofix:
+      enabled: true
+  pre_merge_checks:
+    title:
+      mode: warning
+    description:
+      mode: warning
+
+knowledge_base:
+  learnings:
+    scope: auto
