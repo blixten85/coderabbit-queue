@@ -1,27 +1,27 @@
 {
   "nudges": [
     {
-      "pr": 184,
-      "repo": "bastion",
-      "ts": "2026-07-20T09:32:26.365847+00:00",
-      "type": "resolve"
-    },
-    {
-      "pr": 261,
-      "repo": "scraper",
-      "ts": "2026-07-20T09:32:31.878632+00:00",
-      "type": "resolve"
-    },
-    {
       "pr": 11,
       "repo": "ops-hub",
-      "ts": "2026-07-20T09:32:35.472581+00:00",
+      "ts": "2026-07-20T10:35:11.546238+00:00",
       "type": "review"
     },
     {
       "pr": 136,
       "repo": "product-describer",
-      "ts": "2026-07-20T09:32:37.815100+00:00",
+      "ts": "2026-07-20T10:35:13.527626+00:00",
+      "type": "review"
+    },
+    {
+      "pr": 135,
+      "repo": "product-describer",
+      "ts": "2026-07-20T10:35:15.185413+00:00",
+      "type": "review"
+    },
+    {
+      "pr": 99,
+      "repo": "plex_clear_watchlist",
+      "ts": "2026-07-20T10:35:18.000895+00:00",
       "type": "review"
     }
   ],
@@ -105,7 +105,7 @@
       "last_attempt": "2026-07-15T05:01:46.127853+00:00"
     },
     "blixten85/ops-hub#11": {
-      "last_attempt": "2026-07-20T09:32:35.472581+00:00"
+      "last_attempt": "2026-07-20T10:35:11.546238+00:00"
     },
     "blixten85/ops-hub#12": {
       "last_attempt": "2026-07-15T03:45:40.022287+00:00"
@@ -160,6 +160,9 @@
       "last_attempt": "2026-07-17T00:05:20.460481+00:00",
       "resolve_attempts": 1
     },
+    "blixten85/plex_clear_watchlist#99": {
+      "last_attempt": "2026-07-20T10:35:18.000895+00:00"
+    },
     "blixten85/politiker-kontakter#66": {
       "autofix_attempts": 1,
       "last_attempt": "2026-07-15T16:32:28.539574+00:00"
@@ -200,10 +203,10 @@
       "last_attempt": "2026-07-15T10:59:11.796133+00:00"
     },
     "blixten85/product-describer#135": {
-      "last_attempt": "2026-07-20T05:51:05.061413+00:00"
+      "last_attempt": "2026-07-20T10:35:15.185413+00:00"
     },
     "blixten85/product-describer#136": {
-      "last_attempt": "2026-07-20T09:32:37.815100+00:00"
+      "last_attempt": "2026-07-20T10:35:13.527626+00:00"
     },
     "blixten85/product-describer#139": {
       "last_attempt": "2026-07-20T08:20:17.727286+00:00"
