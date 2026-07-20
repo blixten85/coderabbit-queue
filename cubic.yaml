@@ -1,0 +1,42 @@
+# yaml-language-server: $schema=https://cubic.dev/integrations/schema.v1.json
+version: 1
+reviews:
+  custom_instructions: >
+    Detta repo körs helt obevakat och ÄR själva kontrollmekanismen för resten
+    av flottans PR-granskning - därför high sensitivity och auto_approve som
+    redundans mot CodeRabbits rate-limit (5/timme, kontobrett - se
+    orchestrate.py:s docstring). Om CodeRabbit är rate-limitad kan cubic
+    fortfarande leverera den formella Approve-review som branch-rulesetets
+    required_approving_review_count:1 kräver, istället för att hela kedjan
+    stannar upp.
+
+
+    QUOTA_PER_HOUR-ledgern i orchestrate.py (record_nudge/quota_remaining)
+    är avsiktligt kalibrerad ENBART mot CodeRabbits konto-breda 5/timme-tak.
+    Sentry/cubic nudgar räknas IN i den delade ledgern när deras process_pr
+    batch anropar record_nudge - det är inte en bugg om det ser ut som att
+    de räknas tillsammans med CodeRabbit-kvoten.
+
+
+    @coderabbitai resolve löser BARA CodeRabbits egna trådar (bekräftat mot
+    CodeRabbits dokumentation) - aldrig cubic-dev-ai/Sentry/andras. Trådar
+    från coderabbitai får force-resolvas som sista utväg i process_pr().
+    Trådar från cubic-dev-ai måste lämnas öppna för hantering/eskalering.
+    Trådar från alla andra författare (Sentry/Seer, okända bottar, människor)
+    ska ALDRIG force-resolvas, bara eskaleras till @claude.
+  enabled: true
+  sensitivity: high
+  incremental_commits: true
+  check_drafts: true
+  resolve_threads_when_addressed: false
+  auto_approve: low_risk_only
+  auto_approve_behavior: live
+  auto_approve_rules:
+    exclude:
+      - cubic.yaml
+      - orchestrate.py
+      - CODEOWNERS
+      - .github/**
+  ignore:
+    files:
+      - queue-state.json
