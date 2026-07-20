@@ -28,7 +28,7 @@ reviews:
   sensitivity: high
   incremental_commits: true
   check_drafts: true
-  resolve_threads_when_addressed: true
+  resolve_threads_when_addressed: false
   auto_approve: low_risk_only
   auto_approve_behavior: live
   auto_approve_rules:
@@ -37,6 +37,6 @@ reviews:
       - orchestrate.py
       - CODEOWNERS
       - .github/**
-  ignore:
-    files:
-      - queue-state.json
+ignore:
+  files:
+    - queue-state.json
