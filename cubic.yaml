@@ -37,6 +37,6 @@ reviews:
       - orchestrate.py
       - CODEOWNERS
       - .github/**
-ignore:
-  files:
-    - queue-state.json
+  ignore:
+    files:
+      - queue-state.json
