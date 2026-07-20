@@ -1,28 +1,28 @@
 {
   "nudges": [
     {
-      "pr": 191,
-      "repo": "bastion",
-      "ts": "2026-07-20T20:32:29.355849+00:00",
-      "type": "autofix"
-    },
-    {
       "pr": 11,
       "repo": "ops-hub",
-      "ts": "2026-07-20T20:32:34.113520+00:00",
+      "ts": "2026-07-20T21:45:06.879999+00:00",
       "type": "review"
     },
     {
       "pr": 136,
       "repo": "product-describer",
-      "ts": "2026-07-20T20:32:36.547101+00:00",
+      "ts": "2026-07-20T21:45:08.941819+00:00",
       "type": "review"
     },
     {
       "pr": 135,
       "repo": "product-describer",
-      "ts": "2026-07-20T20:32:38.441441+00:00",
+      "ts": "2026-07-20T21:45:10.713431+00:00",
       "type": "review"
+    },
+    {
+      "pr": 108,
+      "repo": "docker-idempotent-update",
+      "ts": "2026-07-20T21:45:13.148336+00:00",
+      "type": "autofix"
     }
   ],
   "prs": {
@@ -107,6 +107,10 @@
     "blixten85/docker-idempotent-update#106": {
       "last_attempt": "2026-07-15T08:02:26.129876+00:00"
     },
+    "blixten85/docker-idempotent-update#108": {
+      "autofix_attempts": 1,
+      "last_attempt": "2026-07-20T21:45:13.148336+00:00"
+    },
     "blixten85/filtered-movies#137": {
       "last_attempt": "2026-07-16T07:10:07.936873+00:00"
     },
@@ -117,7 +121,7 @@
       "last_attempt": "2026-07-15T05:01:46.127853+00:00"
     },
     "blixten85/ops-hub#11": {
-      "last_attempt": "2026-07-20T20:32:34.113520+00:00"
+      "last_attempt": "2026-07-20T21:45:06.879999+00:00"
     },
     "blixten85/ops-hub#12": {
       "last_attempt": "2026-07-15T03:45:40.022287+00:00"
@@ -218,10 +222,10 @@
       "last_attempt": "2026-07-15T10:59:11.796133+00:00"
     },
     "blixten85/product-describer#135": {
-      "last_attempt": "2026-07-20T20:32:38.441441+00:00"
+      "last_attempt": "2026-07-20T21:45:10.713431+00:00"
     },
     "blixten85/product-describer#136": {
-      "last_attempt": "2026-07-20T20:32:36.547101+00:00"
+      "last_attempt": "2026-07-20T21:45:08.941819+00:00"
     },
     "blixten85/product-describer#139": {
       "last_attempt": "2026-07-20T08:20:17.727286+00:00"
