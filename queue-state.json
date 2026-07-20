@@ -1,27 +1,27 @@
 {
   "nudges": [
     {
-      "pr": 183,
-      "repo": "bastion",
-      "ts": "2026-07-20T05:50:54.051301+00:00",
-      "type": "resolve"
-    },
-    {
       "pr": 11,
       "repo": "ops-hub",
-      "ts": "2026-07-20T05:51:01.132400+00:00",
+      "ts": "2026-07-20T12:25:51.714879+00:00",
       "type": "review"
     },
     {
       "pr": 136,
       "repo": "product-describer",
-      "ts": "2026-07-20T05:51:03.470979+00:00",
+      "ts": "2026-07-20T12:25:54.207105+00:00",
       "type": "review"
     },
     {
       "pr": 135,
       "repo": "product-describer",
-      "ts": "2026-07-20T05:51:05.061413+00:00",
+      "ts": "2026-07-20T12:25:56.296663+00:00",
+      "type": "review"
+    },
+    {
+      "pr": 91,
+      "repo": "plex_clear_watchlist",
+      "ts": "2026-07-20T12:25:59.538564+00:00",
       "type": "review"
     }
   ],
@@ -60,8 +60,18 @@
     },
     "blixten85/bastion#183": {
       "autofix_attempts": 2,
+      "escalated_to_claude": true,
       "last_attempt": "2026-07-20T05:50:54.051301+00:00",
       "resolve_attempts": 1
+    },
+    "blixten85/bastion#184": {
+      "autofix_attempts": 2,
+      "last_attempt": "2026-07-20T09:32:26.365847+00:00",
+      "resolve_attempts": 1
+    },
+    "blixten85/bastion#185": {
+      "autofix_attempts": 1,
+      "last_attempt": "2026-07-20T07:06:13.818757+00:00"
     },
     "blixten85/docker-idempotent-update#100": {
       "autofix_attempts": 2,
@@ -95,7 +105,7 @@
       "last_attempt": "2026-07-15T05:01:46.127853+00:00"
     },
     "blixten85/ops-hub#11": {
-      "last_attempt": "2026-07-20T05:51:01.132400+00:00"
+      "last_attempt": "2026-07-20T12:25:51.714879+00:00"
     },
     "blixten85/ops-hub#12": {
       "last_attempt": "2026-07-15T03:45:40.022287+00:00"
@@ -112,6 +122,7 @@
     },
     "blixten85/ops-hub#17": {
       "autofix_attempts": 2,
+      "escalated_to_claude": true,
       "last_attempt": "2026-07-20T02:25:21.586018+00:00",
       "resolve_attempts": 1
     },
@@ -134,6 +145,9 @@
     "blixten85/pastebinit#116": {
       "last_attempt": "2026-07-16T06:06:50.815073+00:00"
     },
+    "blixten85/plex_clear_watchlist#91": {
+      "last_attempt": "2026-07-20T12:25:59.538564+00:00"
+    },
     "blixten85/plex_clear_watchlist#95": {
       "last_attempt": "2026-07-15T12:07:58.931914+00:00"
     },
@@ -148,6 +162,9 @@
       "escalated_to_claude": true,
       "last_attempt": "2026-07-17T00:05:20.460481+00:00",
       "resolve_attempts": 1
+    },
+    "blixten85/plex_clear_watchlist#99": {
+      "last_attempt": "2026-07-20T10:35:18.000895+00:00"
     },
     "blixten85/politiker-kontakter#66": {
       "autofix_attempts": 1,
@@ -189,10 +206,13 @@
       "last_attempt": "2026-07-15T10:59:11.796133+00:00"
     },
     "blixten85/product-describer#135": {
-      "last_attempt": "2026-07-20T05:51:05.061413+00:00"
+      "last_attempt": "2026-07-20T12:25:56.296663+00:00"
     },
     "blixten85/product-describer#136": {
-      "last_attempt": "2026-07-20T05:51:03.470979+00:00"
+      "last_attempt": "2026-07-20T12:25:54.207105+00:00"
+    },
+    "blixten85/product-describer#139": {
+      "last_attempt": "2026-07-20T08:20:17.727286+00:00"
     },
     "blixten85/product-describer-cloudflare#100": {
       "autofix_attempts": 1,
@@ -270,6 +290,11 @@
     },
     "blixten85/scraper#260": {
       "last_attempt": "2026-07-20T04:32:38.878123+00:00"
+    },
+    "blixten85/scraper#261": {
+      "autofix_attempts": 2,
+      "last_attempt": "2026-07-20T09:32:31.878632+00:00",
+      "resolve_attempts": 1
     }
   },
   "rate_limited_until": "2026-07-16T06:28:09.233552+00:00"
