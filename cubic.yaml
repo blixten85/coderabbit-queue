@@ -43,6 +43,6 @@ reviews:
       - .github/**
       - .coderabbit.yaml
       - queue-state.json
-ignore:
-  files:
-    - queue-state.json
+  ignore:
+    files:
+      - queue-state.json
