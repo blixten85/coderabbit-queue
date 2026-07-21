@@ -27,4 +27,4 @@ jobs:
         run: pip install -r requirements-dev.txt
 
       - name: Run tests
-        run: pytest
+        run: python -m pytest --cov=orchestrate --cov-report=term-missing --cov-fail-under=95
