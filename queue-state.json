@@ -3,25 +3,25 @@
     {
       "pr": 196,
       "repo": "bastion",
-      "ts": "2026-07-21T18:29:27.965232+00:00",
+      "ts": "2026-07-21T19:52:53.083704+00:00",
+      "type": "autofix"
+    },
+    {
+      "pr": 192,
+      "repo": "bastion",
+      "ts": "2026-07-21T19:52:54.858978+00:00",
       "type": "resolve_merge_conflict"
     },
     {
       "pr": 11,
       "repo": "ops-hub",
-      "ts": "2026-07-21T18:29:33.956344+00:00",
+      "ts": "2026-07-21T19:52:59.135398+00:00",
       "type": "review"
     },
     {
       "pr": 146,
       "repo": "product-describer",
-      "ts": "2026-07-21T18:29:36.341622+00:00",
-      "type": "review"
-    },
-    {
-      "pr": 145,
-      "repo": "product-describer",
-      "ts": "2026-07-21T18:29:38.584583+00:00",
+      "ts": "2026-07-21T19:53:01.316984+00:00",
       "type": "review"
     }
   ],
@@ -87,7 +87,8 @@
     },
     "blixten85/bastion#192": {
       "autofix_attempts": 1,
-      "last_attempt": "2026-07-21T06:13:31.202253+00:00"
+      "last_attempt": "2026-07-21T19:52:54.858978+00:00",
+      "merge_conflict_attempts": 1
     },
     "blixten85/bastion#193": {
       "autofix_attempts": 1,
@@ -99,7 +100,8 @@
       "resolve_attempts": 1
     },
     "blixten85/bastion#196": {
-      "last_attempt": "2026-07-21T18:29:27.965232+00:00",
+      "autofix_attempts": 1,
+      "last_attempt": "2026-07-21T19:52:53.083704+00:00",
       "merge_conflict_attempts": 1
     },
     "blixten85/docker-idempotent-update#100": {
@@ -138,7 +140,7 @@
       "last_attempt": "2026-07-15T05:01:46.127853+00:00"
     },
     "blixten85/ops-hub#11": {
-      "last_attempt": "2026-07-21T18:29:33.956344+00:00"
+      "last_attempt": "2026-07-21T19:52:59.135398+00:00"
     },
     "blixten85/ops-hub#12": {
       "last_attempt": "2026-07-15T03:45:40.022287+00:00"
@@ -260,7 +262,7 @@
       "last_attempt": "2026-07-21T18:29:38.584583+00:00"
     },
     "blixten85/product-describer#146": {
-      "last_attempt": "2026-07-21T18:29:36.341622+00:00"
+      "last_attempt": "2026-07-21T19:53:01.316984+00:00"
     },
     "blixten85/product-describer-cloudflare#100": {
       "autofix_attempts": 1,
