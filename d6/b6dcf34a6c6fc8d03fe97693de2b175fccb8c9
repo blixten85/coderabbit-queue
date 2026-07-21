@@ -1,0 +1,20 @@
+cubic.yaml
+  s_57e3d8f9ebd074::t_63885648d0ea9a 44,46-48
+  s_57e3d8f9ebd074::t_41e2a90e46b2b1 1,7-15
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "d6b6dcf34a6c6fc8d03fe97693de2b175fccb8c9",
+  "prompts": {},
+  "sessions": {
+    "s_57e3d8f9ebd074": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "7c796c77-27e7-4818-8d2a-c7289b4f9fb0",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Anders Eriksson <36226327+blixten85@users.noreply.github.com>"
+    }
+  }
+}
