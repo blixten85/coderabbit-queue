@@ -633,7 +633,16 @@ def process_pr(repo, number, state):
             return True
         return False
 
-    needs_coderabbit_review = not has_coderabbit_check(details) or not has_real_review_comment(details)
+    # Nudga bara review om CodeRabbit inte engagerat sig ALLS ännu (varken en
+    # check ELLER en riktig granskningskommentar). Tidigare räckte det att
+    # EN av signalerna saknades (t.ex. review-kommentar finns men ingen
+    # namngiven check dyker upp i det repot) för att nudga om varje cooldown-
+    # cykel — det brände en slot i det kontogemensamma 5/timme-taket i
+    # oändlighet på en PR CodeRabbit redan granskat. En befintlig
+    # kommentar/check betyder att CodeRabbit redan kört eller kör just nu, så
+    # en ny "@coderabbitai review" är bortkastad kvot.
+    coderabbit_engaged = has_coderabbit_check(details) or has_real_review_comment(details)
+    needs_coderabbit_review = not coderabbit_engaged
     needs_sentry_review = not has_sentry_check(details)
     if needs_coderabbit_review or needs_sentry_review:
         posted_any = False
