@@ -1,27 +1,27 @@
 {
   "nudges": [
     {
+      "pr": 195,
+      "repo": "bastion",
+      "ts": "2026-07-21T14:23:38.429056+00:00",
+      "type": "autofix"
+    },
+    {
       "pr": 11,
       "repo": "ops-hub",
-      "ts": "2026-07-21T12:40:27.028539+00:00",
+      "ts": "2026-07-21T14:23:47.370908+00:00",
       "type": "review"
     },
     {
       "pr": 146,
       "repo": "product-describer",
-      "ts": "2026-07-21T12:40:29.039985+00:00",
+      "ts": "2026-07-21T14:23:50.376774+00:00",
       "type": "review"
     },
     {
       "pr": 145,
       "repo": "product-describer",
-      "ts": "2026-07-21T12:40:30.706765+00:00",
-      "type": "review"
-    },
-    {
-      "pr": 144,
-      "repo": "product-describer",
-      "ts": "2026-07-21T12:40:32.733177+00:00",
+      "ts": "2026-07-21T14:23:52.848324+00:00",
       "type": "review"
     }
   ],
@@ -93,6 +93,10 @@
       "autofix_attempts": 1,
       "last_attempt": "2026-07-21T09:13:40.323101+00:00"
     },
+    "blixten85/bastion#195": {
+      "autofix_attempts": 1,
+      "last_attempt": "2026-07-21T14:23:38.429056+00:00"
+    },
     "blixten85/docker-idempotent-update#100": {
       "autofix_attempts": 2,
       "last_attempt": "2026-07-15T13:33:15.502941+00:00"
@@ -129,7 +133,7 @@
       "last_attempt": "2026-07-15T05:01:46.127853+00:00"
     },
     "blixten85/ops-hub#11": {
-      "last_attempt": "2026-07-21T12:40:27.028539+00:00"
+      "last_attempt": "2026-07-21T14:23:47.370908+00:00"
     },
     "blixten85/ops-hub#12": {
       "last_attempt": "2026-07-15T03:45:40.022287+00:00"
@@ -248,10 +252,10 @@
       "last_attempt": "2026-07-21T12:40:32.733177+00:00"
     },
     "blixten85/product-describer#145": {
-      "last_attempt": "2026-07-21T12:40:30.706765+00:00"
+      "last_attempt": "2026-07-21T14:23:52.848324+00:00"
     },
     "blixten85/product-describer#146": {
-      "last_attempt": "2026-07-21T12:40:29.039985+00:00"
+      "last_attempt": "2026-07-21T14:23:50.376774+00:00"
     },
     "blixten85/product-describer-cloudflare#100": {
       "autofix_attempts": 1,
