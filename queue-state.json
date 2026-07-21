@@ -1,27 +1,27 @@
 {
   "nudges": [
     {
-      "pr": 196,
-      "repo": "bastion",
-      "ts": "2026-07-21T22:19:22.492785+00:00",
-      "type": "resolve"
-    },
-    {
       "pr": 11,
       "repo": "ops-hub",
-      "ts": "2026-07-21T22:19:28.564476+00:00",
+      "ts": "2026-07-21T23:20:04.292457+00:00",
       "type": "review"
     },
     {
       "pr": 146,
       "repo": "product-describer",
-      "ts": "2026-07-21T22:19:30.742937+00:00",
+      "ts": "2026-07-21T23:20:06.559710+00:00",
       "type": "review"
     },
     {
       "pr": 145,
       "repo": "product-describer",
-      "ts": "2026-07-21T22:19:32.445792+00:00",
+      "ts": "2026-07-21T23:20:08.527019+00:00",
+      "type": "review"
+    },
+    {
+      "pr": 144,
+      "repo": "product-describer",
+      "ts": "2026-07-21T23:20:10.504827+00:00",
       "type": "review"
     }
   ],
@@ -102,6 +102,7 @@
     },
     "blixten85/bastion#196": {
       "autofix_attempts": 2,
+      "escalated_to_claude": true,
       "last_attempt": "2026-07-21T22:19:22.492785+00:00",
       "merge_conflict_attempts": 1,
       "resolve_attempts": 1
@@ -142,7 +143,7 @@
       "last_attempt": "2026-07-15T05:01:46.127853+00:00"
     },
     "blixten85/ops-hub#11": {
-      "last_attempt": "2026-07-21T22:19:28.564476+00:00"
+      "last_attempt": "2026-07-21T23:20:04.292457+00:00"
     },
     "blixten85/ops-hub#12": {
       "last_attempt": "2026-07-15T03:45:40.022287+00:00"
@@ -258,13 +259,13 @@
       "last_attempt": "2026-07-21T05:04:59.093462+00:00"
     },
     "blixten85/product-describer#144": {
-      "last_attempt": "2026-07-21T12:40:32.733177+00:00"
+      "last_attempt": "2026-07-21T23:20:10.504827+00:00"
     },
     "blixten85/product-describer#145": {
-      "last_attempt": "2026-07-21T22:19:32.445792+00:00"
+      "last_attempt": "2026-07-21T23:20:08.527019+00:00"
     },
     "blixten85/product-describer#146": {
-      "last_attempt": "2026-07-21T22:19:30.742937+00:00"
+      "last_attempt": "2026-07-21T23:20:06.559710+00:00"
     },
     "blixten85/product-describer-cloudflare#100": {
       "autofix_attempts": 1,
