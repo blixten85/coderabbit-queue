@@ -104,6 +104,29 @@ RATE_LIMIT_PATTERN = re.compile(
 # INTE innehåller en progress-länk.
 CUBIC_COMMAND_FAILED_PATTERN = re.compile(r"cubic command failed", re.IGNORECASE)
 
+# Exakta bot-inloggningar vi litar på. Att matcha på substräng ("coderabbit"
+# in login) är osäkert: GitHub-användarnamn är fritt valbara, så vem som helst
+# kan registrera t.ex. "coderabbit-x" eller "notcubic" och posta en kommentar
+# som orkestreraren då tolkar som en auktoritativ bot-signal. En angripare i
+# vilket som helst av target-repona skulle så kunna trigga en flottbred DoS
+# (t.ex. förfalska "more reviews will be available in 999 hours" -> hela kön
+# backar av) eller mata in extra bot-körningar. Verifiera därför den exakta
+# inloggningen (med GitHub Apps "[bot]"-suffix bortstrippat) istället.
+CODERABBIT_LOGINS = frozenset({"coderabbitai"})
+CUBIC_LOGINS = frozenset({"cubic-dev-ai"})
+
+
+def is_bot_author(author_login, allowed_logins):
+    """True om author_login är exakt en av de tillåtna bot-inloggningarna.
+    Strippar GitHub Apps "[bot]"-suffix så "coderabbitai[bot]" matchar
+    "coderabbitai". Skiljer sig medvetet från en substrängkoll: en förfalskad
+    användare vars namn bara *innehåller* "coderabbit"/"cubic" får INTE
+    passera."""
+    login = (author_login or "").lower()
+    if login.endswith("[bot]"):
+        login = login[: -len("[bot]")]
+    return login in allowed_logins
+
 
 def now_utc():
     return datetime.now(timezone.utc)
@@ -223,7 +246,7 @@ def detect_and_record_rate_limit(state, details):
     CodeRabbit självt) snarare än vår egen händelsebaserade gissning."""
     for comment in details.get("comments") or []:
         author = (comment.get("author") or {}).get("login", "")
-        if "coderabbit" not in author.lower():
+        if not is_bot_author(author, CODERABBIT_LOGINS):
             continue
         body = comment.get("body") or ""
         m = RATE_LIMIT_PATTERN.search(body)
@@ -252,7 +275,7 @@ def last_cubic_command_failed(details):
         return False
     last = comments[-1]
     author = (last.get("author") or {}).get("login", "")
-    if "cubic" not in author.lower():
+    if not is_bot_author(author, CUBIC_LOGINS):
         return False
     body = last.get("body") or ""
     return bool(CUBIC_COMMAND_FAILED_PATTERN.search(body))
@@ -425,11 +448,11 @@ def has_real_review_comment(details):
     for review in details.get("reviews") or []:
         body = review.get("body") or ""
         author = (review.get("author") or {}).get("login", "")
-        if "coderabbit" in author.lower() and body.strip():
+        if is_bot_author(author, CODERABBIT_LOGINS) and body.strip():
             return True
     for comment in details.get("comments") or []:
         author = (comment.get("author") or {}).get("login", "")
-        if "coderabbit" in author.lower():
+        if is_bot_author(author, CODERABBIT_LOGINS):
             return True
     return False
 
