@@ -3,25 +3,25 @@
     {
       "pr": 145,
       "repo": "product-describer",
-      "ts": "2026-07-22T22:22:38.173484+00:00",
+      "ts": "2026-07-22T23:39:47.335852+00:00",
       "type": "review"
     },
     {
       "pr": 144,
       "repo": "product-describer",
-      "ts": "2026-07-22T22:22:39.856070+00:00",
+      "ts": "2026-07-22T23:39:49.116364+00:00",
       "type": "review"
     },
     {
       "pr": 143,
       "repo": "product-describer",
-      "ts": "2026-07-22T22:22:41.288580+00:00",
+      "ts": "2026-07-22T23:39:50.827839+00:00",
       "type": "review"
     },
     {
       "pr": 142,
       "repo": "product-describer",
-      "ts": "2026-07-22T22:22:42.797088+00:00",
+      "ts": "2026-07-22T23:39:52.649081+00:00",
       "type": "review"
     }
   ],
@@ -261,16 +261,16 @@
       "last_attempt": "2026-07-20T08:20:17.727286+00:00"
     },
     "blixten85/product-describer#142": {
-      "last_attempt": "2026-07-22T22:22:42.797088+00:00"
+      "last_attempt": "2026-07-22T23:39:52.649081+00:00"
     },
     "blixten85/product-describer#143": {
-      "last_attempt": "2026-07-22T22:22:41.288580+00:00"
+      "last_attempt": "2026-07-22T23:39:50.827839+00:00"
     },
     "blixten85/product-describer#144": {
-      "last_attempt": "2026-07-22T22:22:39.856070+00:00"
+      "last_attempt": "2026-07-22T23:39:49.116364+00:00"
     },
     "blixten85/product-describer#145": {
-      "last_attempt": "2026-07-22T22:22:38.173484+00:00"
+      "last_attempt": "2026-07-22T23:39:47.335852+00:00"
     },
     "blixten85/product-describer#146": {
       "last_attempt": "2026-07-22T21:02:18.855536+00:00"
