@@ -1,27 +1,27 @@
 {
   "nudges": [
     {
-      "pr": 144,
-      "repo": "product-describer",
-      "ts": "2026-07-23T22:38:34.985050+00:00",
-      "type": "resolve_merge_conflict"
-    },
-    {
       "pr": 163,
       "repo": "politiker-webapp",
-      "ts": "2026-07-23T22:38:40.761311+00:00",
+      "ts": "2026-07-23T23:39:09.312062+00:00",
       "type": "review"
     },
     {
-      "pr": 162,
-      "repo": "politiker-webapp",
-      "ts": "2026-07-23T22:38:42.297350+00:00",
-      "type": "resolve_merge_conflict"
+      "pr": 148,
+      "repo": "filtered-movies",
+      "ts": "2026-07-23T23:39:13.731541+00:00",
+      "type": "review"
     },
     {
-      "pr": 144,
+      "pr": 142,
       "repo": "filtered-movies",
-      "ts": "2026-07-23T22:38:44.681044+00:00",
+      "ts": "2026-07-23T23:39:15.442079+00:00",
+      "type": "review"
+    },
+    {
+      "pr": 106,
+      "repo": "product-describer-cloudflare",
+      "ts": "2026-07-23T23:39:18.184977+00:00",
       "type": "review"
     }
   ],
@@ -154,8 +154,14 @@
     "blixten85/filtered-movies#140": {
       "last_attempt": "2026-07-17T00:05:44.702876+00:00"
     },
+    "blixten85/filtered-movies#142": {
+      "last_attempt": "2026-07-23T23:39:15.442079+00:00"
+    },
     "blixten85/filtered-movies#144": {
       "last_attempt": "2026-07-23T22:38:44.681044+00:00"
+    },
+    "blixten85/filtered-movies#148": {
+      "last_attempt": "2026-07-23T23:39:13.731541+00:00"
     },
     "blixten85/ops-hub#10": {
       "last_attempt": "2026-07-15T05:01:46.127853+00:00"
@@ -273,11 +279,12 @@
       "last_attempt": "2026-07-15T19:03:11.367688+00:00"
     },
     "blixten85/politiker-webapp#162": {
+      "escalated_to_claude": true,
       "last_attempt": "2026-07-23T22:38:42.297350+00:00",
       "merge_conflict_attempts": 2
     },
     "blixten85/politiker-webapp#163": {
-      "last_attempt": "2026-07-23T22:38:40.761311+00:00"
+      "last_attempt": "2026-07-23T23:39:09.312062+00:00"
     },
     "blixten85/politiker-webapp#164": {
       "autofix_attempts": 2,
@@ -312,6 +319,7 @@
       "last_attempt": "2026-07-23T00:56:33.806380+00:00"
     },
     "blixten85/product-describer#144": {
+      "escalated_to_claude": true,
       "last_attempt": "2026-07-23T22:38:34.985050+00:00",
       "merge_conflict_attempts": 2
     },
@@ -326,6 +334,9 @@
     "blixten85/product-describer-cloudflare#100": {
       "autofix_attempts": 1,
       "last_attempt": "2026-07-16T16:30:55.842089+00:00"
+    },
+    "blixten85/product-describer-cloudflare#106": {
+      "last_attempt": "2026-07-23T23:39:18.184977+00:00"
     },
     "blixten85/product-describer-cloudflare#90": {
       "last_attempt": "2026-07-16T07:10:22.475727+00:00"
