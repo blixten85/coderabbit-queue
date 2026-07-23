@@ -3,25 +3,25 @@
     {
       "pr": 201,
       "repo": "bastion",
-      "ts": "2026-07-23T14:27:08.835537+00:00",
+      "ts": "2026-07-23T16:12:21.713060+00:00",
       "type": "resolve_merge_conflict"
     },
     {
       "pr": 145,
       "repo": "product-describer",
-      "ts": "2026-07-23T14:27:14.434469+00:00",
+      "ts": "2026-07-23T16:12:28.994936+00:00",
       "type": "review"
     },
     {
       "pr": 144,
       "repo": "product-describer",
-      "ts": "2026-07-23T14:27:16.551959+00:00",
+      "ts": "2026-07-23T16:12:31.156549+00:00",
       "type": "review"
     },
     {
-      "pr": 79,
+      "pr": 78,
       "repo": "politiker-kontakter",
-      "ts": "2026-07-23T14:27:21.064560+00:00",
+      "ts": "2026-07-23T16:12:35.606475+00:00",
       "type": "review"
     }
   ],
@@ -116,8 +116,8 @@
       "last_attempt": "2026-07-22T14:23:20.899263+00:00"
     },
     "blixten85/bastion#201": {
-      "last_attempt": "2026-07-23T14:27:08.835537+00:00",
-      "merge_conflict_attempts": 1
+      "last_attempt": "2026-07-23T16:12:21.713060+00:00",
+      "merge_conflict_attempts": 2
     },
     "blixten85/docker-idempotent-update#100": {
       "autofix_attempts": 2,
@@ -248,6 +248,9 @@
     "blixten85/politiker-kontakter#70": {
       "last_attempt": "2026-07-15T17:47:00.667407+00:00"
     },
+    "blixten85/politiker-kontakter#78": {
+      "last_attempt": "2026-07-23T16:12:35.606475+00:00"
+    },
     "blixten85/politiker-kontakter#79": {
       "last_attempt": "2026-07-23T14:27:21.064560+00:00"
     },
@@ -299,10 +302,10 @@
       "last_attempt": "2026-07-23T00:56:33.806380+00:00"
     },
     "blixten85/product-describer#144": {
-      "last_attempt": "2026-07-23T14:27:16.551959+00:00"
+      "last_attempt": "2026-07-23T16:12:31.156549+00:00"
     },
     "blixten85/product-describer#145": {
-      "last_attempt": "2026-07-23T14:27:14.434469+00:00"
+      "last_attempt": "2026-07-23T16:12:28.994936+00:00"
     },
     "blixten85/product-describer#146": {
       "last_attempt": "2026-07-22T21:02:18.855536+00:00"
