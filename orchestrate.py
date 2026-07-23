@@ -116,16 +116,25 @@ CODERABBIT_LOGINS = frozenset({"coderabbitai"})
 CUBIC_LOGINS = frozenset({"cubic-dev-ai"})
 
 
+def normalize_login(author_login):
+    """Gemener + strippat GitHub Apps "[bot]"-suffix, så "coderabbitai[bot]"
+    normaliseras till "coderabbitai". Används både för exakt bot-verifiering
+    (is_bot_author) och för att gruppera olösta trådar per bot
+    (get_unresolved_threads_by_author) så att båda kodvägarna alltid är
+    överens om vilken login en kommentar tillhör."""
+    login = (author_login or "").lower()
+    if login.endswith("[bot]"):
+        login = login[: -len("[bot]")]
+    return login
+
+
 def is_bot_author(author_login, allowed_logins):
     """True om author_login är exakt en av de tillåtna bot-inloggningarna.
     Strippar GitHub Apps "[bot]"-suffix så "coderabbitai[bot]" matchar
     "coderabbitai". Skiljer sig medvetet från en substrängkoll: en förfalskad
     användare vars namn bara *innehåller* "coderabbit"/"cubic" får INTE
     passera."""
-    login = (author_login or "").lower()
-    if login.endswith("[bot]"):
-        login = login[: -len("[bot]")]
-    return login in allowed_logins
+    return normalize_login(author_login) in allowed_logins
 
 
 def now_utc():
@@ -408,7 +417,7 @@ def get_unresolved_threads_by_author(repo, number):
             if n.get("isOutdated", False):
                 continue
             first_comment = (n.get("comments", {}).get("nodes") or [{}])[0]
-            author = ((first_comment.get("author") or {}).get("login") or "unknown").lower()
+            author = normalize_login((first_comment.get("author") or {}).get("login") or "unknown")
             by_author[author] = by_author.get(author, 0) + 1
         page_info = threads.get("pageInfo", {})
         if page_info.get("hasNextPage"):
