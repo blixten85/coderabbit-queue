@@ -3,25 +3,25 @@
     {
       "pr": 201,
       "repo": "bastion",
-      "ts": "2026-07-23T18:46:06.829798+00:00",
-      "type": "autofix"
+      "ts": "2026-07-23T20:04:04.331136+00:00",
+      "type": "resolve"
     },
     {
       "pr": 145,
       "repo": "product-describer",
-      "ts": "2026-07-23T18:46:12.747314+00:00",
-      "type": "review"
+      "ts": "2026-07-23T20:04:08.652059+00:00",
+      "type": "resolve_merge_conflict"
     },
     {
       "pr": 144,
       "repo": "product-describer",
-      "ts": "2026-07-23T18:46:15.067003+00:00",
+      "ts": "2026-07-23T20:04:10.370599+00:00",
       "type": "review"
     },
     {
       "pr": 163,
       "repo": "politiker-webapp",
-      "ts": "2026-07-23T18:46:19.231236+00:00",
+      "ts": "2026-07-23T20:04:13.286324+00:00",
       "type": "review"
     }
   ],
@@ -117,8 +117,9 @@
     },
     "blixten85/bastion#201": {
       "autofix_attempts": 2,
-      "last_attempt": "2026-07-23T18:46:06.829798+00:00",
-      "merge_conflict_attempts": 2
+      "last_attempt": "2026-07-23T20:04:04.331136+00:00",
+      "merge_conflict_attempts": 2,
+      "resolve_attempts": 1
     },
     "blixten85/docker-idempotent-update#100": {
       "autofix_attempts": 2,
@@ -271,7 +272,7 @@
       "last_attempt": "2026-07-15T19:03:09.607560+00:00"
     },
     "blixten85/politiker-webapp#163": {
-      "last_attempt": "2026-07-23T18:46:19.231236+00:00"
+      "last_attempt": "2026-07-23T20:04:13.286324+00:00"
     },
     "blixten85/politiker-webapp#164": {
       "autofix_attempts": 2,
@@ -306,10 +307,11 @@
       "last_attempt": "2026-07-23T00:56:33.806380+00:00"
     },
     "blixten85/product-describer#144": {
-      "last_attempt": "2026-07-23T18:46:15.067003+00:00"
+      "last_attempt": "2026-07-23T20:04:10.370599+00:00"
     },
     "blixten85/product-describer#145": {
-      "last_attempt": "2026-07-23T18:46:12.747314+00:00"
+      "last_attempt": "2026-07-23T20:04:08.652059+00:00",
+      "merge_conflict_attempts": 1
     },
     "blixten85/product-describer#146": {
       "last_attempt": "2026-07-22T21:02:18.855536+00:00"
