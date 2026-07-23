@@ -105,6 +105,14 @@ RATE_LIMIT_PATTERN = re.compile(
 CUBIC_COMMAND_FAILED_PATTERN = re.compile(r"cubic command failed", re.IGNORECASE)
 
 
+class GhError(Exception):
+    """A gh/GitHub API call failed in a way the caller must not paper over.
+
+    Raised for read operations whose empty/partial result would otherwise be
+    indistinguishable from a legitimate "nothing here" answer and lead to a
+    wrong decision (e.g. treating a PR with unresolved threads as all clear)."""
+
+
 def now_utc():
     return datetime.now(timezone.utc)
 
@@ -278,8 +286,13 @@ def run_gh(args, input_text=None):
         )
         span.set_data("gh.returncode", result.returncode)
         if result.returncode != 0:
-            span.set_data("gh.stderr", result.stderr.strip())
-            print(f"gh {' '.join(args)} failed: {result.stderr.strip()}", file=sys.stderr)
+            stderr = result.stderr.strip()
+            span.set_data("gh.stderr", stderr)
+            msg = f"gh {' '.join(args)} failed: {stderr}"
+            print(msg, file=sys.stderr)
+            # Surface the swallowed failure to Sentry instead of only printing
+            # to stderr — otherwise a persistent API/auth problem is invisible.
+            sentry_sdk.capture_message(msg, level="warning")
             return None
         return result.stdout
 
@@ -295,11 +308,13 @@ def list_open_prs(repo):
         ]
     )
     if out is None:
-        return []
+        # gh failed — NOT the same as "no open PRs". Propagate so the caller
+        # skips this repo for the run instead of silently treating it as empty.
+        raise GhError(f"could not list open PRs for {OWNER}/{repo}")
     try:
         return [p["number"] for p in json.loads(out)]
-    except json.JSONDecodeError:
-        return []
+    except (json.JSONDecodeError, KeyError, TypeError) as e:
+        raise GhError(f"malformed PR list for {OWNER}/{repo}: {e}") from e
 
 
 def get_pr_details(repo, number):
@@ -366,11 +381,18 @@ def get_unresolved_threads_by_author(repo, number):
             args += ["-f", f"endCursor={cursor}"]
         out = run_gh(args)
         if out is None:
-            return by_author, total_unresolved
+            # Returning the partial counts gathered so far would undercount
+            # unresolved threads and could make a still-blocked PR look "all
+            # clear" (and get auto-merged). Propagate so the PR is skipped.
+            raise GhError(
+                f"could not fetch review threads for {OWNER}/{repo}#{number}"
+            )
         try:
             data = json.loads(out)
-        except json.JSONDecodeError:
-            return by_author, total_unresolved
+        except json.JSONDecodeError as e:
+            raise GhError(
+                f"malformed review-thread response for {OWNER}/{repo}#{number}: {e}"
+            ) from e
         threads = (
             data.get("data", {})
             .get("repository", {})
@@ -441,7 +463,10 @@ def post_comment(repo, number, body):
         text=True,
     )
     if result.returncode != 0:
-        print(f"Failed to comment on {repo}#{number}: {result.stderr.strip()}", file=sys.stderr)
+        msg = f"Failed to comment on {repo}#{number}: {result.stderr.strip()}"
+        print(msg, file=sys.stderr)
+        # A dropped nudge silently wastes a run — make it visible in Sentry.
+        sentry_sdk.capture_message(msg, level="error")
         return False
     return True
 
@@ -462,7 +487,11 @@ def escalate_to_claude(repo, number):
         text=True,
     )
     if result.returncode != 0:
-        print(f"Failed to label {repo}#{number} ask-claude: {result.stderr.strip()}", file=sys.stderr)
+        msg = f"Failed to label {repo}#{number} ask-claude: {result.stderr.strip()}"
+        print(msg, file=sys.stderr)
+        # Escalation is the last resort; if it silently fails the PR is stuck
+        # with no one notified — surface it.
+        sentry_sdk.capture_message(msg, level="error")
         return False
     return True
 
@@ -479,7 +508,9 @@ def update_branch(repo, number):
         text=True,
     )
     if result.returncode != 0:
-        print(f"Failed to update branch on {repo}#{number}: {result.stderr.strip()}", file=sys.stderr)
+        msg = f"Failed to update branch on {repo}#{number}: {result.stderr.strip()}"
+        print(msg, file=sys.stderr)
+        sentry_sdk.capture_message(msg, level="warning")
         return False
     return True
 
@@ -602,7 +633,16 @@ def process_pr(repo, number, state):
             return True
         return False
 
-    needs_coderabbit_review = not has_coderabbit_check(details) or not has_real_review_comment(details)
+    # Nudga bara review om CodeRabbit inte engagerat sig ALLS ännu (varken en
+    # check ELLER en riktig granskningskommentar). Tidigare räckte det att
+    # EN av signalerna saknades (t.ex. review-kommentar finns men ingen
+    # namngiven check dyker upp i det repot) för att nudga om varje cooldown-
+    # cykel — det brände en slot i det kontogemensamma 5/timme-taket i
+    # oändlighet på en PR CodeRabbit redan granskat. En befintlig
+    # kommentar/check betyder att CodeRabbit redan kört eller kör just nu, så
+    # en ny "@coderabbitai review" är bortkastad kvot.
+    coderabbit_engaged = has_coderabbit_check(details) or has_real_review_comment(details)
+    needs_coderabbit_review = not coderabbit_engaged
     needs_sentry_review = not has_sentry_check(details)
     if needs_coderabbit_review or needs_sentry_review:
         posted_any = False
@@ -700,44 +740,68 @@ def main():
             repo_count=len(REPOS),
         )
 
-        for repo in REPOS:
-            remaining = quota_remaining(state)
-            if remaining <= 0:
-                sentry_sdk.logger.warning(
-                    "Global quota exhausted ({quota}/hour). Stopping run early.",
-                    quota=QUOTA_PER_HOUR,
-                )
-                print(f"Global quota exhausted ({QUOTA_PER_HOUR}/hour). Stopping run early.")
-                break
+        # Persist state no matter how the run ends. record_nudge() mutates
+        # `state` right after a nudge is actually posted to GitHub; if an
+        # unexpected error aborted the run before we saved, those already-sent
+        # nudges would vanish from the ledger and be re-sent next run — blowing
+        # the account-wide quota this orchestrator exists to protect.
+        try:
+            _run(state)
+        finally:
+            save_state(state)
 
-            print(f"== {repo} ==")
-            sentry_sdk.set_tag("github.repo", f"{OWNER}/{repo}")
-
-            with sentry_sdk.start_span(name=f"process_repo {repo}") as repo_span:
-                repo_span.set_data("github.repo", f"{OWNER}/{repo}")
-                pr_numbers = list_open_prs(repo)
-                if not pr_numbers:
-                    print("  no open PRs")
-                    continue
-
-                for number in pr_numbers:
-                    remaining = quota_remaining(state)
-                    if remaining <= 0:
-                        sentry_sdk.logger.warning(
-                            "Global quota exhausted ({quota}/hour). Stopping run early.",
-                            quota=QUOTA_PER_HOUR,
-                        )
-                        print(f"Global quota exhausted ({QUOTA_PER_HOUR}/hour). Stopping run early.")
-                        save_state(state)
-                        return
-                    with sentry_sdk.start_span(name=f"process_pr {repo}#{number}") as pr_span:
-                        pr_span.set_data("github.repo", f"{OWNER}/{repo}")
-                        pr_span.set_data("github.pr_number", number)
-                        process_pr(repo, number, state)
-
-        save_state(state)
         sentry_sdk.logger.info("Orchestrator run completed")
         print("Done. Nudges sent this run recorded in queue-state.json.")
+
+
+def _run(state):
+    for repo in REPOS:
+        remaining = quota_remaining(state)
+        if remaining <= 0:
+            sentry_sdk.logger.warning(
+                "Global quota exhausted ({quota}/hour). Stopping run early.",
+                quota=QUOTA_PER_HOUR,
+            )
+            print(f"Global quota exhausted ({QUOTA_PER_HOUR}/hour). Stopping run early.")
+            return
+
+        print(f"== {repo} ==")
+        sentry_sdk.set_tag("github.repo", f"{OWNER}/{repo}")
+
+        with sentry_sdk.start_span(name=f"process_repo {repo}") as repo_span:
+            repo_span.set_data("github.repo", f"{OWNER}/{repo}")
+            try:
+                pr_numbers = list_open_prs(repo)
+            except GhError as e:
+                # Couldn't enumerate PRs — skip this repo for the run rather
+                # than mistaking the API failure for "no open PRs".
+                print(f"  skipping {repo}: {e}", file=sys.stderr)
+                sentry_sdk.capture_exception(e)
+                continue
+            if not pr_numbers:
+                print("  no open PRs")
+                continue
+
+            for number in pr_numbers:
+                remaining = quota_remaining(state)
+                if remaining <= 0:
+                    sentry_sdk.logger.warning(
+                        "Global quota exhausted ({quota}/hour). Stopping run early.",
+                        quota=QUOTA_PER_HOUR,
+                    )
+                    print(f"Global quota exhausted ({QUOTA_PER_HOUR}/hour). Stopping run early.")
+                    return
+                with sentry_sdk.start_span(name=f"process_pr {repo}#{number}") as pr_span:
+                    pr_span.set_data("github.repo", f"{OWNER}/{repo}")
+                    pr_span.set_data("github.pr_number", number)
+                    # Isolate per-PR failures: one bad PR must not abort the
+                    # whole run (and lose the state of every nudge already
+                    # sent this run). Report it and move on.
+                    try:
+                        process_pr(repo, number, state)
+                    except Exception as e:
+                        print(f"  {repo}#{number}: error, skipping: {e}", file=sys.stderr)
+                        sentry_sdk.capture_exception(e)
 
 
 if __name__ == "__main__":
