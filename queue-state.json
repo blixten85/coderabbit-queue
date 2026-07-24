@@ -1,16 +1,28 @@
 {
   "nudges": [
     {
-      "pr": 163,
-      "repo": "politiker-webapp",
-      "ts": "2026-07-24T06:12:11.093145+00:00",
-      "type": "review"
+      "pr": 204,
+      "repo": "bastion",
+      "ts": "2026-07-24T07:13:09.632980+00:00",
+      "type": "resolve"
     },
     {
-      "pr": 106,
-      "repo": "product-describer-cloudflare",
-      "ts": "2026-07-24T06:12:14.909497+00:00",
-      "type": "review"
+      "pr": 202,
+      "repo": "bastion",
+      "ts": "2026-07-24T07:13:13.213116+00:00",
+      "type": "resolve"
+    },
+    {
+      "pr": 172,
+      "repo": "politiker-webapp",
+      "ts": "2026-07-24T07:13:20.473162+00:00",
+      "type": "resolve_merge_conflict"
+    },
+    {
+      "pr": 170,
+      "repo": "politiker-webapp",
+      "ts": "2026-07-24T07:13:21.725951+00:00",
+      "type": "resolve_merge_conflict"
     }
   ],
   "prs": {
@@ -108,6 +120,14 @@
       "escalated_to_claude": true,
       "last_attempt": "2026-07-23T20:04:04.331136+00:00",
       "merge_conflict_attempts": 2,
+      "resolve_attempts": 1
+    },
+    "blixten85/bastion#202": {
+      "last_attempt": "2026-07-24T07:13:13.213116+00:00",
+      "resolve_attempts": 1
+    },
+    "blixten85/bastion#204": {
+      "last_attempt": "2026-07-24T07:13:09.632980+00:00",
       "resolve_attempts": 1
     },
     "blixten85/docker-idempotent-update#100": {
@@ -279,6 +299,14 @@
       "escalated_to_claude": true,
       "last_attempt": "2026-07-16T10:03:36.721717+00:00",
       "resolve_attempts": 1
+    },
+    "blixten85/politiker-webapp#170": {
+      "last_attempt": "2026-07-24T07:13:21.725951+00:00",
+      "merge_conflict_attempts": 1
+    },
+    "blixten85/politiker-webapp#172": {
+      "last_attempt": "2026-07-24T07:13:20.473162+00:00",
+      "merge_conflict_attempts": 1
     },
     "blixten85/product-describer#133": {
       "autofix_attempts": 2,
