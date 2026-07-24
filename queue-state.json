@@ -17,6 +17,12 @@
       "repo": "repo-standard",
       "ts": "2026-07-24T00:53:23.505263+00:00",
       "type": "autofix"
+    },
+    {
+      "pr": 163,
+      "repo": "politiker-webapp",
+      "ts": "2026-07-24T01:35:14.545775+00:00",
+      "type": "review"
     }
   ],
   "prs": {
@@ -278,7 +284,7 @@
       "merge_conflict_attempts": 2
     },
     "blixten85/politiker-webapp#163": {
-      "last_attempt": "2026-07-24T00:53:16.939616+00:00"
+      "last_attempt": "2026-07-24T01:35:14.545775+00:00"
     },
     "blixten85/politiker-webapp#164": {
       "autofix_attempts": 2,
