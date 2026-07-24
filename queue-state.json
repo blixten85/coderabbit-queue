@@ -1,27 +1,15 @@
 {
   "nudges": [
     {
-      "pr": 204,
-      "repo": "bastion",
-      "ts": "2026-07-24T11:01:52.151162+00:00",
-      "type": "resolve_merge_conflict"
-    },
-    {
-      "pr": 202,
-      "repo": "bastion",
-      "ts": "2026-07-24T11:01:53.778188+00:00",
-      "type": "resolve_merge_conflict"
-    },
-    {
       "pr": 163,
       "repo": "politiker-webapp",
-      "ts": "2026-07-24T11:02:05.220366+00:00",
+      "ts": "2026-07-24T12:32:01.634789+00:00",
       "type": "review"
     },
     {
-      "pr": 162,
-      "repo": "politiker-webapp",
-      "ts": "2026-07-24T11:02:06.750152+00:00",
+      "pr": 106,
+      "repo": "product-describer-cloudflare",
+      "ts": "2026-07-24T12:32:05.592163+00:00",
       "type": "review"
     }
   ],
@@ -123,11 +111,13 @@
       "resolve_attempts": 1
     },
     "blixten85/bastion#202": {
+      "escalated_to_claude": true,
       "last_attempt": "2026-07-24T11:01:53.778188+00:00",
       "merge_conflict_attempts": 2,
       "resolve_attempts": 1
     },
     "blixten85/bastion#204": {
+      "escalated_to_claude": true,
       "last_attempt": "2026-07-24T11:01:52.151162+00:00",
       "merge_conflict_attempts": 2,
       "resolve_attempts": 1
@@ -294,7 +284,7 @@
       "merge_conflict_attempts": 2
     },
     "blixten85/politiker-webapp#163": {
-      "last_attempt": "2026-07-24T11:02:05.220366+00:00"
+      "last_attempt": "2026-07-24T12:32:01.634789+00:00"
     },
     "blixten85/politiker-webapp#164": {
       "autofix_attempts": 2,
@@ -356,7 +346,7 @@
       "last_attempt": "2026-07-16T16:30:55.842089+00:00"
     },
     "blixten85/product-describer-cloudflare#106": {
-      "last_attempt": "2026-07-24T06:12:14.909497+00:00"
+      "last_attempt": "2026-07-24T12:32:05.592163+00:00"
     },
     "blixten85/product-describer-cloudflare#90": {
       "last_attempt": "2026-07-16T07:10:22.475727+00:00"
