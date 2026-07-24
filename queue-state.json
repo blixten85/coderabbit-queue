@@ -17,6 +17,12 @@
       "repo": "product-describer-cloudflare",
       "ts": "2026-07-24T16:55:54.846987+00:00",
       "type": "review"
+    },
+    {
+      "pr": 173,
+      "repo": "politiker-webapp",
+      "ts": "2026-07-24T17:33:06.212809+00:00",
+      "type": "autofix"
     }
   ],
   "prs": {
@@ -309,7 +315,8 @@
       "merge_conflict_attempts": 2
     },
     "blixten85/politiker-webapp#173": {
-      "last_attempt": "2026-07-24T16:55:46.763649+00:00"
+      "autofix_attempts": 1,
+      "last_attempt": "2026-07-24T17:33:06.212809+00:00"
     },
     "blixten85/product-describer#133": {
       "autofix_attempts": 2,
