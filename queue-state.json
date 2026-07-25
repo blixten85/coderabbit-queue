@@ -1,27 +1,27 @@
 {
   "nudges": [
     {
-      "pr": 145,
-      "repo": "product-describer",
-      "ts": "2026-07-23T12:42:19.203749+00:00",
+      "pr": 65,
+      "repo": "routines-relay",
+      "ts": "2026-07-25T15:44:04.386480+00:00",
       "type": "review"
     },
     {
-      "pr": 144,
-      "repo": "product-describer",
-      "ts": "2026-07-23T12:42:21.843192+00:00",
+      "pr": 64,
+      "repo": "routines-relay",
+      "ts": "2026-07-25T15:44:06.026230+00:00",
       "type": "review"
     },
     {
-      "pr": 118,
-      "repo": "pastebinit",
-      "ts": "2026-07-23T12:42:25.633379+00:00",
+      "pr": 111,
+      "repo": "docker-idempotent-update",
+      "ts": "2026-07-25T15:44:10.617348+00:00",
       "type": "review"
     },
     {
-      "pr": 117,
-      "repo": "pastebinit",
-      "ts": "2026-07-23T12:42:28.476456+00:00",
+      "pr": 110,
+      "repo": "docker-idempotent-update",
+      "ts": "2026-07-25T15:44:12.537845+00:00",
       "type": "review"
     }
   ],
@@ -115,6 +115,25 @@
       "autofix_attempts": 1,
       "last_attempt": "2026-07-22T14:23:20.899263+00:00"
     },
+    "blixten85/bastion#201": {
+      "autofix_attempts": 2,
+      "escalated_to_claude": true,
+      "last_attempt": "2026-07-23T20:04:04.331136+00:00",
+      "merge_conflict_attempts": 2,
+      "resolve_attempts": 1
+    },
+    "blixten85/bastion#202": {
+      "escalated_to_claude": true,
+      "last_attempt": "2026-07-24T11:01:53.778188+00:00",
+      "merge_conflict_attempts": 2,
+      "resolve_attempts": 1
+    },
+    "blixten85/bastion#204": {
+      "escalated_to_claude": true,
+      "last_attempt": "2026-07-24T11:01:52.151162+00:00",
+      "merge_conflict_attempts": 2,
+      "resolve_attempts": 1
+    },
     "blixten85/docker-idempotent-update#100": {
       "autofix_attempts": 2,
       "last_attempt": "2026-07-15T13:33:15.502941+00:00"
@@ -141,11 +160,29 @@
       "autofix_attempts": 1,
       "last_attempt": "2026-07-20T21:45:13.148336+00:00"
     },
+    "blixten85/docker-idempotent-update#109": {
+      "last_attempt": "2026-07-25T14:35:32.732517+00:00"
+    },
+    "blixten85/docker-idempotent-update#110": {
+      "last_attempt": "2026-07-25T15:44:12.537845+00:00"
+    },
+    "blixten85/docker-idempotent-update#111": {
+      "last_attempt": "2026-07-25T15:44:10.617348+00:00"
+    },
     "blixten85/filtered-movies#137": {
       "last_attempt": "2026-07-16T07:10:07.936873+00:00"
     },
     "blixten85/filtered-movies#140": {
       "last_attempt": "2026-07-17T00:05:44.702876+00:00"
+    },
+    "blixten85/filtered-movies#142": {
+      "last_attempt": "2026-07-23T23:39:15.442079+00:00"
+    },
+    "blixten85/filtered-movies#144": {
+      "last_attempt": "2026-07-23T22:38:44.681044+00:00"
+    },
+    "blixten85/filtered-movies#148": {
+      "last_attempt": "2026-07-23T23:39:13.731541+00:00"
     },
     "blixten85/ops-hub#10": {
       "last_attempt": "2026-07-15T05:01:46.127853+00:00"
@@ -244,6 +281,12 @@
     "blixten85/politiker-kontakter#70": {
       "last_attempt": "2026-07-15T17:47:00.667407+00:00"
     },
+    "blixten85/politiker-kontakter#78": {
+      "last_attempt": "2026-07-23T16:12:35.606475+00:00"
+    },
+    "blixten85/politiker-kontakter#79": {
+      "last_attempt": "2026-07-23T14:27:21.064560+00:00"
+    },
     "blixten85/politiker-webapp#158": {
       "last_attempt": "2026-07-15T20:23:59.151267+00:00"
     },
@@ -257,12 +300,33 @@
       "last_attempt": "2026-07-15T19:03:11.367688+00:00"
     },
     "blixten85/politiker-webapp#162": {
-      "last_attempt": "2026-07-15T19:03:09.607560+00:00"
+      "escalated_to_claude": true,
+      "last_attempt": "2026-07-24T11:02:06.750152+00:00",
+      "merge_conflict_attempts": 2
+    },
+    "blixten85/politiker-webapp#163": {
+      "last_attempt": "2026-07-24T22:02:18.362470+00:00"
     },
     "blixten85/politiker-webapp#164": {
       "autofix_attempts": 2,
       "escalated_to_claude": true,
       "last_attempt": "2026-07-16T10:03:36.721717+00:00",
+      "resolve_attempts": 1
+    },
+    "blixten85/politiker-webapp#170": {
+      "escalated_to_claude": true,
+      "last_attempt": "2026-07-24T09:10:06.179022+00:00",
+      "merge_conflict_attempts": 2
+    },
+    "blixten85/politiker-webapp#172": {
+      "escalated_to_claude": true,
+      "last_attempt": "2026-07-24T09:10:04.889058+00:00",
+      "merge_conflict_attempts": 2
+    },
+    "blixten85/politiker-webapp#173": {
+      "autofix_attempts": 2,
+      "escalated_to_claude": true,
+      "last_attempt": "2026-07-24T20:46:35.242912+00:00",
       "resolve_attempts": 1
     },
     "blixten85/product-describer#133": {
@@ -292,20 +356,36 @@
       "last_attempt": "2026-07-23T00:56:33.806380+00:00"
     },
     "blixten85/product-describer#144": {
-      "last_attempt": "2026-07-23T12:42:21.843192+00:00"
+      "escalated_to_claude": true,
+      "last_attempt": "2026-07-23T22:38:34.985050+00:00",
+      "merge_conflict_attempts": 2
     },
     "blixten85/product-describer#145": {
-      "last_attempt": "2026-07-23T12:42:19.203749+00:00"
+      "escalated_to_claude": true,
+      "last_attempt": "2026-07-23T21:24:31.815093+00:00",
+      "merge_conflict_attempts": 2
     },
     "blixten85/product-describer#146": {
       "last_attempt": "2026-07-22T21:02:18.855536+00:00"
+    },
+    "blixten85/product-describer#149": {
+      "last_attempt": "2026-07-24T14:00:06.858418+00:00"
     },
     "blixten85/product-describer-cloudflare#100": {
       "autofix_attempts": 1,
       "last_attempt": "2026-07-16T16:30:55.842089+00:00"
     },
+    "blixten85/product-describer-cloudflare#106": {
+      "last_attempt": "2026-07-24T22:02:21.731165+00:00"
+    },
     "blixten85/product-describer-cloudflare#90": {
       "last_attempt": "2026-07-16T07:10:22.475727+00:00"
+    },
+    "blixten85/repo-standard#10": {
+      "autofix_attempts": 2,
+      "escalated_to_claude": true,
+      "last_attempt": "2026-07-24T03:50:20.090467+00:00",
+      "resolve_attempts": 1
     },
     "blixten85/repo-standard#7": {
       "autofix_attempts": 1,
@@ -338,6 +418,18 @@
       "autofix_attempts": 2,
       "last_attempt": "2026-07-19T23:25:20.963663+00:00",
       "resolve_attempts": 1
+    },
+    "blixten85/routines-relay#62": {
+      "last_attempt": "2026-07-25T13:03:14.066825+00:00"
+    },
+    "blixten85/routines-relay#63": {
+      "last_attempt": "2026-07-24T22:40:27.258120+00:00"
+    },
+    "blixten85/routines-relay#64": {
+      "last_attempt": "2026-07-25T15:44:06.026230+00:00"
+    },
+    "blixten85/routines-relay#65": {
+      "last_attempt": "2026-07-25T15:44:04.386480+00:00"
     },
     "blixten85/scraper#242": {
       "last_attempt": "2026-07-15T01:34:45.994714+00:00"
