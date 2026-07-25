@@ -104,6 +104,38 @@ RATE_LIMIT_PATTERN = re.compile(
 # INTE innehåller en progress-länk.
 CUBIC_COMMAND_FAILED_PATTERN = re.compile(r"cubic command failed", re.IGNORECASE)
 
+# Exakta bot-inloggningar vi litar på. Att matcha på substräng ("coderabbit"
+# in login) är osäkert: GitHub-användarnamn är fritt valbara, så vem som helst
+# kan registrera t.ex. "coderabbit-x" eller "notcubic" och posta en kommentar
+# som orkestreraren då tolkar som en auktoritativ bot-signal. En angripare i
+# vilket som helst av target-repona skulle så kunna trigga en flottbred DoS
+# (t.ex. förfalska "more reviews will be available in 999 hours" -> hela kön
+# backar av) eller mata in extra bot-körningar. Verifiera därför den exakta
+# inloggningen (med GitHub Apps "[bot]"-suffix bortstrippat) istället.
+CODERABBIT_LOGINS = frozenset({"coderabbitai"})
+CUBIC_LOGINS = frozenset({"cubic-dev-ai"})
+
+
+def normalize_login(author_login):
+    """Gemener + strippat GitHub Apps "[bot]"-suffix, så "coderabbitai[bot]"
+    normaliseras till "coderabbitai". Används både för exakt bot-verifiering
+    (is_bot_author) och för att gruppera olösta trådar per bot
+    (get_unresolved_threads_by_author) så att båda kodvägarna alltid är
+    överens om vilken login en kommentar tillhör."""
+    login = (author_login or "").lower()
+    if login.endswith("[bot]"):
+        login = login[: -len("[bot]")]
+    return login
+
+
+def is_bot_author(author_login, allowed_logins):
+    """True om author_login är exakt en av de tillåtna bot-inloggningarna.
+    Strippar GitHub Apps "[bot]"-suffix så "coderabbitai[bot]" matchar
+    "coderabbitai". Skiljer sig medvetet från en substrängkoll: en förfalskad
+    användare vars namn bara *innehåller* "coderabbit"/"cubic" får INTE
+    passera."""
+    return normalize_login(author_login) in allowed_logins
+
 
 def now_utc():
     return datetime.now(timezone.utc)
@@ -267,7 +299,8 @@ def detect_and_record_rate_limit(state, details):
     hittad: sätt en kontobred backoff-deadline i state, auktoritativ (från
     CodeRabbit självt) snarare än vår egen händelsebaserade gissning."""
     for comment in details.get("comments") or []:
-        if not author_is(comment, "coderabbit"):
+        author = (comment.get("author") or {}).get("login", "")
+        if not is_bot_author(author, CODERABBIT_LOGINS):
             continue
         body = comment.get("body") or ""
         m = RATE_LIMIT_PATTERN.search(body)
@@ -295,7 +328,8 @@ def last_cubic_command_failed(details):
     if not comments:
         return False
     last = comments[-1]
-    if not author_is(last, "cubic"):
+    author = (last.get("author") or {}).get("login", "")
+    if not is_bot_author(author, CUBIC_LOGINS):
         return False
     body = last.get("body") or ""
     return bool(CUBIC_COMMAND_FAILED_PATTERN.search(body))
@@ -408,7 +442,7 @@ def get_unresolved_threads_by_author(repo, number):
             if n.get("isOutdated", False):
                 continue
             first_comment = (n.get("comments", {}).get("nodes") or [{}])[0]
-            author = (author_login(first_comment) or "unknown").lower()
+            author = normalize_login((first_comment.get("author") or {}).get("login") or "unknown")
             by_author[author] = by_author.get(author, 0) + 1
         page_info = threads.get("pageInfo", {})
         if page_info.get("hasNextPage"):
@@ -447,10 +481,12 @@ def has_sentry_check(details):
 def has_real_review_comment(details):
     for review in details.get("reviews") or []:
         body = review.get("body") or ""
-        if author_is(review, "coderabbit") and body.strip():
+        author = (review.get("author") or {}).get("login", "")
+        if is_bot_author(author, CODERABBIT_LOGINS) and body.strip():
             return True
     for comment in details.get("comments") or []:
-        if author_is(comment, "coderabbit"):
+        author = (comment.get("author") or {}).get("login", "")
+        if is_bot_author(author, CODERABBIT_LOGINS):
             return True
     return False
 
