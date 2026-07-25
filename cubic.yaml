@@ -1,0 +1,48 @@
+# yaml-language-server: $schema=https://cubic.dev/schema/cubic-repository-config.schema.json
+version: 1
+reviews:
+  custom_instructions: >
+    Detta repo körs helt obevakat och ÄR själva kontrollmekanismen för resten
+    av flottans PR-granskning - därför high sensitivity och auto_approve som
+    en OVILLKORLIG redundans, inte bara en rate-limit-fallback. cubic har
+    ingen koppling till orchestrate.py:s QUOTA_PER_HOUR-ledger och kan inte
+    villkoras mot CodeRabbits kvotläge (cubic kör som egen oberoende bot,
+    inte styrd av orkestratorns cron) - live-godkännande sker alltså alltid
+    för low_risk_only-ändringar, oavsett om CodeRabbit är rate-limitad eller
+    inte. Det är en medveten avvägning (dubbel täckning > exakt villkorad
+    fallback), inte en bugg om CodeRabbit också hinner godkänna samma PR.
+    Se orchestrate.py:s docstring för CodeRabbits eget 5/timme-tak, som
+    fortfarande är den delade ledgerns enda kalibreringsmål.
+
+
+    QUOTA_PER_HOUR-ledgern i orchestrate.py (record_nudge/quota_remaining)
+    är avsiktligt kalibrerad ENBART mot CodeRabbits konto-breda 5/timme-tak.
+    Sentry/cubic nudgar räknas IN i den delade ledgern när deras process_pr
+    batch anropar record_nudge - det är inte en bugg om det ser ut som att
+    de räknas tillsammans med CodeRabbit-kvoten.
+
+
+    @coderabbitai resolve löser BARA CodeRabbits egna trådar (bekräftat mot
+    CodeRabbits dokumentation) - aldrig cubic-dev-ai/Sentry/andras. Trådar
+    från coderabbitai får force-resolvas som sista utväg i process_pr().
+    Trådar från cubic-dev-ai måste lämnas öppna för hantering/eskalering.
+    Trådar från alla andra författare (Sentry/Seer, okända bottar, människor)
+    ska ALDRIG force-resolvas, bara eskaleras till @claude.
+  enabled: true
+  sensitivity: high
+  incremental_commits: true
+  check_drafts: true
+  resolve_threads_when_addressed: false
+  auto_approve: low_risk_only
+  auto_approve_behavior: live
+  auto_approve_rules:
+    exclude:
+      - cubic.yaml
+      - orchestrate.py
+      - CODEOWNERS
+      - .github/**
+      - .coderabbit.yaml
+      - queue-state.json
+  ignore:
+    files:
+      - queue-state.json
