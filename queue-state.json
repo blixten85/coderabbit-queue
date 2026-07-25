@@ -1,18 +1,6 @@
 {
   "nudges": [
     {
-      "pr": 63,
-      "repo": "routines-relay",
-      "ts": "2026-07-24T22:40:27.258120+00:00",
-      "type": "review"
-    },
-    {
-      "pr": 62,
-      "repo": "routines-relay",
-      "ts": "2026-07-24T22:40:30.463639+00:00",
-      "type": "review"
-    },
-    {
       "pr": 62,
       "repo": "routines-relay",
       "ts": "2026-07-24T23:22:44.336170+00:00",
@@ -22,6 +10,18 @@
       "pr": 111,
       "repo": "docker-idempotent-update",
       "ts": "2026-07-24T23:22:48.639441+00:00",
+      "type": "review"
+    },
+    {
+      "pr": 62,
+      "repo": "routines-relay",
+      "ts": "2026-07-25T00:01:55.697503+00:00",
+      "type": "review"
+    },
+    {
+      "pr": 111,
+      "repo": "docker-idempotent-update",
+      "ts": "2026-07-25T00:02:00.207800+00:00",
       "type": "review"
     }
   ],
@@ -161,7 +161,7 @@
       "last_attempt": "2026-07-20T21:45:13.148336+00:00"
     },
     "blixten85/docker-idempotent-update#111": {
-      "last_attempt": "2026-07-24T23:22:48.639441+00:00"
+      "last_attempt": "2026-07-25T00:02:00.207800+00:00"
     },
     "blixten85/filtered-movies#137": {
       "last_attempt": "2026-07-16T07:10:07.936873+00:00"
@@ -414,7 +414,7 @@
       "resolve_attempts": 1
     },
     "blixten85/routines-relay#62": {
-      "last_attempt": "2026-07-24T23:22:44.336170+00:00"
+      "last_attempt": "2026-07-25T00:01:55.697503+00:00"
     },
     "blixten85/routines-relay#63": {
       "last_attempt": "2026-07-24T22:40:27.258120+00:00"
