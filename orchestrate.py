@@ -153,6 +153,54 @@ def parse_ts(ts):
     return datetime.fromisoformat(ts.replace("Z", "+00:00"))
 
 
+def pr_key(repo, pr_number):
+    """Canonical `owner/repo#N` key used throughout state["prs"]."""
+    return f"{OWNER}/{repo}#{pr_number}"
+
+
+def author_login(obj):
+    """Login of the author of a comment/review node, "" if absent."""
+    return ((obj or {}).get("author") or {}).get("login") or ""
+
+
+def author_is(obj, name):
+    """True if obj's author login contains `name` (case-insensitive)."""
+    return name.lower() in author_login(obj).lower()
+
+
+def parse_json(out):
+    """json.loads that returns None on empty input or a decode error,
+    matching how every gh-output consumer here degrades gracefully."""
+    if out is None:
+        return None
+    try:
+        return json.loads(out)
+    except json.JSONDecodeError:
+        return None
+
+
+def graphql_args(query, **variables):
+    """Build `gh api graphql` argv. Ints are passed with -F (typed),
+    everything else with -f (string), skipping None-valued variables."""
+    args = ["api", "graphql", "-f", f"query={query}"]
+    for name, value in variables.items():
+        if value is None:
+            continue
+        flag = "-F" if isinstance(value, int) and not isinstance(value, bool) else "-f"
+        args += [flag, f"{name}={value}"]
+    return args
+
+
+def run_gh_check(args, error_msg):
+    """Run a `gh` command that we only care about the success of. Logs
+    error_msg + stderr to stderr on failure. Returns True on success."""
+    result = subprocess.run(["gh"] + args, capture_output=True, text=True)
+    if result.returncode != 0:
+        print(f"{error_msg}: {result.stderr.strip()}", file=sys.stderr)
+        return False
+    return True
+
+
 @sentry_sdk.trace
 def load_state():
     try:
@@ -178,7 +226,7 @@ def migrate_merge_conflict_attempts(state):
             repo = nudge.get("repo")
             pr = nudge.get("pr")
             if repo and pr:
-                key = f"{OWNER}/{repo}#{pr}"
+                key = pr_key(repo, pr)
                 merge_conflict_counts[key] = merge_conflict_counts.get(key, 0) + 1
 
     for key, count in merge_conflict_counts.items():
@@ -207,8 +255,7 @@ def quota_remaining(state):
 def record_nudge(state, repo, pr_number, nudge_type):
     ts = now_utc().isoformat()
     state["nudges"].append({"ts": ts, "repo": repo, "pr": pr_number, "type": nudge_type})
-    key = f"{OWNER}/{repo}#{pr_number}"
-    entry = state["prs"].setdefault(key, {})
+    entry = state["prs"].setdefault(pr_key(repo, pr_number), {})
     entry["last_attempt"] = ts
     if nudge_type == "autofix":
         entry["autofix_attempts"] = entry.get("autofix_attempts", 0) + 1
@@ -220,34 +267,32 @@ def record_nudge(state, repo, pr_number, nudge_type):
         entry["cubic_retry_attempts"] = entry.get("cubic_retry_attempts", 0) + 1
 
 
+def attempt_count(state, repo, pr_number, field):
+    return state["prs"].get(pr_key(repo, pr_number), {}).get(field, 0)
+
+
 def autofix_attempts(state, repo, pr_number):
-    key = f"{OWNER}/{repo}#{pr_number}"
-    return state["prs"].get(key, {}).get("autofix_attempts", 0)
+    return attempt_count(state, repo, pr_number, "autofix_attempts")
 
 
 def cubic_retry_attempts(state, repo, pr_number):
-    key = f"{OWNER}/{repo}#{pr_number}"
-    return state["prs"].get(key, {}).get("cubic_retry_attempts", 0)
+    return attempt_count(state, repo, pr_number, "cubic_retry_attempts")
 
 
 def resolve_attempts(state, repo, pr_number):
-    key = f"{OWNER}/{repo}#{pr_number}"
-    return state["prs"].get(key, {}).get("resolve_attempts", 0)
+    return attempt_count(state, repo, pr_number, "resolve_attempts")
 
 
 def merge_conflict_attempts(state, repo, pr_number):
-    key = f"{OWNER}/{repo}#{pr_number}"
-    return state["prs"].get(key, {}).get("merge_conflict_attempts", 0)
+    return attempt_count(state, repo, pr_number, "merge_conflict_attempts")
 
 
 def already_escalated(state, repo, pr_number):
-    key = f"{OWNER}/{repo}#{pr_number}"
-    return bool(state["prs"].get(key, {}).get("escalated_to_claude"))
+    return bool(state["prs"].get(pr_key(repo, pr_number), {}).get("escalated_to_claude"))
 
 
 def mark_escalated(state, repo, pr_number):
-    key = f"{OWNER}/{repo}#{pr_number}"
-    state["prs"].setdefault(key, {})["escalated_to_claude"] = True
+    state["prs"].setdefault(pr_key(repo, pr_number), {})["escalated_to_claude"] = True
 
 
 def is_rate_limited(state):
@@ -299,8 +344,7 @@ def last_cubic_command_failed(details):
 
 
 def recently_attempted(state, repo, pr_number):
-    key = f"{OWNER}/{repo}#{pr_number}"
-    entry = state["prs"].get(key)
+    entry = state["prs"].get(pr_key(repo, pr_number))
     if not entry or "last_attempt" not in entry:
         return False
     last = parse_ts(entry["last_attempt"])
@@ -339,14 +383,10 @@ def list_open_prs(repo):
             "--limit", "100",
         ]
     )
-    if out is None:
-        # gh failed — NOT the same as "no open PRs". Propagate so the caller
-        # skips this repo for the run instead of silently treating it as empty.
-        raise GhError(f"could not list open PRs for {OWNER}/{repo}")
-    try:
-        return [p["number"] for p in json.loads(out)]
-    except (json.JSONDecodeError, KeyError, TypeError) as e:
-        raise GhError(f"malformed PR list for {OWNER}/{repo}: {e}") from e
+    data = parse_json(out)
+    if data is None:
+        return []
+    return [p["number"] for p in data]
 
 
 def get_pr_details(repo, number):
@@ -358,12 +398,7 @@ def get_pr_details(repo, number):
             "mergeStateStatus,mergeable,statusCheckRollup,reviews,comments",
         ]
     )
-    if out is None:
-        return None
-    try:
-        return json.loads(out)
-    except json.JSONDecodeError:
-        return None
+    return parse_json(out)
 
 
 def get_unresolved_threads_by_author(repo, number):
@@ -402,29 +437,10 @@ def get_unresolved_threads_by_author(repo, number):
     total_unresolved = 0
     cursor = None
     while True:
-        args = [
-            "api", "graphql",
-            "-f", f"query={query}",
-            "-f", f"owner={OWNER}",
-            "-f", f"repo={repo}",
-            "-F", f"number={number}",
-        ]
-        if cursor:
-            args += ["-f", f"endCursor={cursor}"]
-        out = run_gh(args)
-        if out is None:
-            # Returning the partial counts gathered so far would undercount
-            # unresolved threads and could make a still-blocked PR look "all
-            # clear" (and get auto-merged). Propagate so the PR is skipped.
-            raise GhError(
-                f"could not fetch review threads for {OWNER}/{repo}#{number}"
-            )
-        try:
-            data = json.loads(out)
-        except json.JSONDecodeError as e:
-            raise GhError(
-                f"malformed review-thread response for {OWNER}/{repo}#{number}: {e}"
-            ) from e
+        out = run_gh(graphql_args(query, owner=OWNER, repo=repo, number=number, endCursor=cursor))
+        data = parse_json(out)
+        if data is None:
+            return by_author, total_unresolved
         threads = (
             data.get("data", {})
             .get("repository", {})
@@ -489,18 +505,10 @@ def has_real_review_comment(details):
 
 
 def post_comment(repo, number, body):
-    result = subprocess.run(
-        ["gh", "pr", "comment", str(number), "--repo", f"{OWNER}/{repo}", "--body", body],
-        capture_output=True,
-        text=True,
+    return run_gh_check(
+        ["pr", "comment", str(number), "--repo", f"{OWNER}/{repo}", "--body", body],
+        f"Failed to comment on {repo}#{number}",
     )
-    if result.returncode != 0:
-        msg = f"Failed to comment on {repo}#{number}: {result.stderr.strip()}"
-        print(msg, file=sys.stderr)
-        # A dropped nudge silently wastes a run — make it visible in Sentry.
-        sentry_sdk.capture_message(msg, level="error")
-        return False
-    return True
 
 
 def escalate_to_claude(repo, number):
@@ -513,19 +521,10 @@ def escalate_to_claude(repo, number):
     (resolve-uttömd respektive merge-conflict-uttömd), men already_escalated()
     ovan garanterar ändå max EN eskalering per PR totalt, aldrig en loop —
     samma säkerhetsprincip som förhindrade den tidigare 1500kr/6h-kostnadsincidenten."""
-    result = subprocess.run(
-        ["gh", "pr", "edit", str(number), "--repo", f"{OWNER}/{repo}", "--add-label", "ask-claude"],
-        capture_output=True,
-        text=True,
+    return run_gh_check(
+        ["pr", "edit", str(number), "--repo", f"{OWNER}/{repo}", "--add-label", "ask-claude"],
+        f"Failed to label {repo}#{number} ask-claude",
     )
-    if result.returncode != 0:
-        msg = f"Failed to label {repo}#{number} ask-claude: {result.stderr.strip()}"
-        print(msg, file=sys.stderr)
-        # Escalation is the last resort; if it silently fails the PR is stuck
-        # with no one notified — surface it.
-        sentry_sdk.capture_message(msg, level="error")
-        return False
-    return True
 
 
 def update_branch(repo, number):
@@ -534,17 +533,10 @@ def update_branch(repo, number):
     CodeRabbit-kommando, men skapar en ny commit som CodeRabbit automatiskt
     granskar på egen hand -> räknas ändå mot vår egen kvot-ledger nedan så vi
     inte råkar trigga fler granskningar än QUOTA_PER_HOUR tillåter totalt."""
-    result = subprocess.run(
-        ["gh", "api", "-X", "PUT", f"repos/{OWNER}/{repo}/pulls/{number}/update-branch"],
-        capture_output=True,
-        text=True,
+    return run_gh_check(
+        ["api", "-X", "PUT", f"repos/{OWNER}/{repo}/pulls/{number}/update-branch"],
+        f"Failed to update branch on {repo}#{number}",
     )
-    if result.returncode != 0:
-        msg = f"Failed to update branch on {repo}#{number}: {result.stderr.strip()}"
-        print(msg, file=sys.stderr)
-        sentry_sdk.capture_message(msg, level="warning")
-        return False
-    return True
 
 
 def get_pr_id_and_automerge(repo, number):
@@ -558,20 +550,9 @@ def get_pr_id_and_automerge(repo, number):
       }
     }
     """
-    out = run_gh(
-        [
-            "api", "graphql",
-            "-f", f"query={query}",
-            "-f", f"owner={OWNER}",
-            "-f", f"repo={repo}",
-            "-F", f"number={number}",
-        ]
-    )
-    if out is None:
-        return None, False
-    try:
-        data = json.loads(out)
-    except json.JSONDecodeError:
+    out = run_gh(graphql_args(query, owner=OWNER, repo=repo, number=number))
+    data = parse_json(out)
+    if data is None:
         return None, False
     pr = (data.get("data") or {}).get("repository", {}).get("pullRequest") or {}
     return pr.get("id"), bool(pr.get("autoMergeRequest"))
@@ -585,7 +566,7 @@ def enable_auto_merge(repo, pr_id):
       }
     }
     """
-    out = run_gh(["api", "graphql", "-f", f"query={mutation}", "-f", f"id={pr_id}"])
+    out = run_gh(graphql_args(mutation, id=pr_id))
     if out is None:
         print(f"Failed to enable auto-merge on {repo}: {pr_id}", file=sys.stderr)
         return False
